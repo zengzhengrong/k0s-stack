@@ -13,12 +13,6 @@ spec:
         chartname: argo/argo-cd
         namespace: default
         values: |
-          repoServer:
-            env:
-              - name: http_proxy
-                value: http://192.168.2.100:7890
-              - name: https_proxy
-                value: http://192.168.2.100:7890
           server:
             extraArgs:
               - --insecure
