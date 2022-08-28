@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingress-nginx
+spec:
+  destination:
+    namespace: ingress-nginx
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: ingress-nginx
+    helm:
+      parameters:
+      - name: controller.admissionWebhooks.patch.image.image
+        value: google_containers/kube-webhook-certgen
+      - name: controller.admissionWebhooks.patch.image.digest
+        value: sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660
+      - name: controller.admissionWebhooks.patch.image.registry
+        value: registry.aliyuncs.com
+      - name: controller.image.image
+        value: google_containers/nginx-ingress-controller
+      - name: controller.image.registry
+        value: registry.aliyuncs.com
+      - name: controller.service.type
+        value: NodePort
+    repoURL: https://kubernetes.github.io/ingress-nginx
+    targetRevision: 4.2.3
+  syncPolicy:
+    automated:
+      prune: true
+      allowEmpty: false
+    syncOptions:
+    - CreateNamespace=true

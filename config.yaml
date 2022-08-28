@@ -1,0 +1,170 @@
+apiVersion: k0s.k0sproject.io/v1beta1
+kind: ClusterConfig
+metadata:
+  name: k0s
+spec:
+  extensions:
+    helm:
+      repositories:
+      - name: argo
+        url: https://argoproj.github.io/argo-helm
+      charts:
+      - name: argocd
+        chartname: argo/argo-cd
+        namespace: default
+        values: |
+          repoServer:
+            env:
+              - name: http_proxy
+                value: http://192.168.2.100:7890
+              - name: https_proxy
+                value: http://192.168.2.100:7890
+          server:
+            extraArgs:
+              - --insecure
+            ingress:
+              annotations:
+                nginx.ingress.kubernetes.io/ssl-redirect: "false"
+                nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+                nginx.ingress.kubernetes.io/compute-full-forwarded-for: "true"
+              enabled: true
+              hosts: 
+                - argocd.localhost
+              ingressClassName: nginx
+          configs:
+            secret:
+              argocdServerAdminPassword: $2a$10$geIjyqBxjeqyYesrQPe1deq9CyO04DKpIqT/BqJHvYl.Y0/LDf.p2
+      - name: argo-apps
+        chartname: argo/argocd-apps
+        namespace: default
+        values: |
+          projects: 
+            - name: default
+              clusterResourceWhitelist:
+              - group: '*'
+                kind: '*'
+              destinations:
+              - namespace: '*'
+                server: '*'
+              sourceRepos:
+              - '*'
+          applications:
+            - name: ingress-nginx
+              destination:
+                namespace: ingress-nginx
+                server: https://kubernetes.default.svc
+              project: default
+              source:
+                chart: ingress-nginx
+                helm:
+                  parameters:
+                  - name: controller.admissionWebhooks.patch.image.image
+                    value: google_containers/kube-webhook-certgen
+                  - name: controller.admissionWebhooks.patch.image.digest
+                    value: sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660
+                  - name: controller.admissionWebhooks.patch.image.registry
+                    value: registry.aliyuncs.com
+                  - name: controller.image.image
+                    value: google_containers/nginx-ingress-controller
+                  - name: controller.image.registry
+                    value: registry.aliyuncs.com
+                  - name: controller.service.type
+                    value: NodePort
+                  - name: controller.service.nodePorts.http
+                    value: '32080'
+                  - name: controller.service.nodePorts.https
+                    value: '32443'
+                repoURL: https://kubernetes.github.io/ingress-nginx
+                targetRevision: 4.2.3
+              syncPolicy:
+                automated:
+                  prune: true
+                  allowEmpty: false
+                syncOptions:
+                - CreateNamespace=true
+            - name: argo-workflows
+              destination:
+                namespace: argo
+                server: https://kubernetes.default.svc
+              project: default
+              source:
+                chart: argo-workflows
+                helm:
+                  parameters:
+                  - name: server.ingress.enabled
+                    value: "true"
+                  - name: server.ingress.ingressClassName
+                    value: nginx
+                  - name: mainContainer.imagePullPolicy
+                    value: IfNotPresent
+                  - name: images.pullPolicy
+                    value: IfNotPresent
+                  - name: server.servicePortName
+                    value: http
+                  - name: server.ingress.hosts[0]
+                    value: argostack.localhost
+                repoURL: https://argoproj.github.io/argo-helm
+                targetRevision: 0.17.1
+              syncPolicy:
+                automated:
+                  prune: true
+                  allowEmpty: false
+                syncOptions:
+                - CreateNamespace=true
+            - name: argo-events
+              destination:
+                namespace: argo
+                server: https://kubernetes.default.svc
+              project: default
+              source:
+                chart: argo-events
+                repoURL: https://argoproj.github.io/argo-helm
+                targetRevision: 2.0.4
+              syncPolicy: 
+                automated:
+                  prune: true
+                  allowEmpty: false
+                syncOptions:
+                - CreateNamespace=true
+            - name: argo-rollouts
+              finalizers:
+              - resources-finalizer.argocd.argoproj.io
+              destination:
+                namespace: argo
+                server: https://kubernetes.default.svc
+              project: default
+              source:
+                chart: argo-rollouts
+                helm:
+                  parameters:
+                  - name: dashboard.ingress.enabled
+                    value: "true"
+                  - name: dashboard.ingress.ingressClassName
+                    value: nginx
+                  - name: dashboard.ingress.hosts[0]
+                    value: argorollouts.localhost
+                  - name: dashboard.enabled
+                    value: "true"
+                repoURL: https://argoproj.github.io/argo-helm
+                targetRevision: 2.20.0
+              syncPolicy: 
+                automated:
+                  prune: true
+                  allowEmpty: false
+                syncOptions:
+                - CreateNamespace=true
+            - name: argocd-image-updater
+              finalizers:
+              - resources-finalizer.argocd.argoproj.io
+              destination:
+                namespace: argo
+                server: https://kubernetes.default.svc
+              project: default
+              source:
+                path: manifests/base
+                repoURL: https://github.com/argoproj-labs/argocd-image-updater
+                targetRevision: HEAD
+              syncPolicy:
+                automated:
+                  prune: true
+                  selfHeal: true

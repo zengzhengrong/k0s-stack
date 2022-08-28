@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: argo-rollouts
+spec:
+  destination:
+    namespace: argo
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: argo-rollouts
+    helm:
+      parameters:
+      - name: dashboard.ingress.enabled
+        value: "true"
+      - name: dashboard.ingress.ingressClassName
+        value: nginx
+      - name: dashboard.ingress.hosts[0]
+        value: argorollouts.localhost
+      - name: dashboard.enabled
+        value: "true"
+    repoURL: https://argoproj.github.io/argo-helm
+    targetRevision: 2.20.0
+  syncPolicy: 
+    automated:
+      prune: true
+      allowEmpty: false
+    syncOptions:
+    - CreateNamespace=true

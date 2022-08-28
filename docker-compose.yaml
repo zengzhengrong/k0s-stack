@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  k0s:
+    container_name: k0s
+    image: docker.io/k0sproject/k0s:latest
+    command: k0s controller --config=/etc/k0s/config.yaml --single
+    hostname: k0s
+    privileged: true
+    volumes:
+      - "/var/lib/k0s"
+      - "./config.yaml:/etc/k0s/config.yaml"
+      - "./admin.conf:/var/lib/k0s/pki/admin.conf"
+    tmpfs:
+      - /run
+      - /var/run
+    ports:
+      - "6443:6443"
+      - "80:32080"
+      - "443:32443"
+      - "8080:8080"
+      - "8000:8000"
+    network_mode: "bridge"
+    environment:
+      - HTTP_PROXY=http://192.168.2.100:7890
