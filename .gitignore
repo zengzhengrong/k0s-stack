@@ -1,3 +1,4 @@
 cmd/argo-workflows/argo
 cmd/argo-rollouts/kubectl-argo-rollouts
 cmd/argocd/argocd
+admin.conf

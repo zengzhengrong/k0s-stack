@@ -7,6 +7,7 @@ services:
     hostname: k0s
     privileged: true
     volumes:
+      # - "/sys/fs/cgroup:/sys/fs/cgroup:rw" # on mac docker desktop and set deprecatedCgroupv1 true in ~/Library/Group\ Containers/group.com.docker/settings.json  
       - "/var/lib/k0s"
       - "./config.yaml:/etc/k0s/config.yaml"
       - "./admin.conf:/var/lib/k0s/pki/admin.conf"
@@ -21,4 +22,4 @@ services:
       - "8000:8000"
     network_mode: "bridge"
     environment:
-      - HTTP_PROXY=http://192.168.2.100:7890
+      - HTTP_PROXY=http://192.168.2.111:7890
