@@ -8,7 +8,7 @@ docker-compose up -d
 
 # Argocd 
 
-Access UI  by default  username ```admin``` password ```admin``
+Access UI  by default  username ```admin``` password ```admin```
 
 
 
