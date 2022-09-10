@@ -14,7 +14,7 @@ wsl --install --distribution <Distribution Name>
 or manual https://docs.microsoft.com/en-us/windows/wsl/install-manual
 
 
-![Docker](https://github.com/zengzhengrong/k0s-stack/blob/preview/nvidia-container-runtime/image/docker.png)
+![Docker](https://github.com/zengzhengrong/k0s-stack/blob/nvidia-container-runtime/image/docker.png)
 
 
 https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl
