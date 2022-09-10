@@ -2,10 +2,11 @@ version: "3.9"
 services:
   k0s:
     container_name: k0s
-    image: docker.io/k0sproject/k0s:latest
+    image: docker.io/zengzhengrong889/k0s:bullseye-nvidia
     command: k0s controller --config=/etc/k0s/config.yaml --single
     hostname: k0s
     privileged: true
+    runtime: nvidia
     volumes:
       - "/var/lib/k0s"
       - "./config.yaml:/etc/k0s/config.yaml"
@@ -21,3 +22,12 @@ services:
       - "8080:8080"
       - "8000:8000"
     network_mode: "bridge"
+    environment:
+      - "NVIDIA_VISIBLE_DEVICES=all"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: "nvidia"
+              count: "all"
+              capabilities: ["gpu"]
