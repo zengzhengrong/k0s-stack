@@ -96,8 +96,9 @@ GPU Device 0: "Pascal" with compute capability 6.1
 ```
 
 # Konw Issue
-
-Install k8s-device-plugin
+1.wsl
+https://docs.nvidia.com/cuda/wsl-user-guide/index.html#setting-up-linux-dev-env
+2.Install k8s-device-plugin
 https://github.com/NVIDIA/k8s-device-plugin/issues/332
 
 # Argocd 
