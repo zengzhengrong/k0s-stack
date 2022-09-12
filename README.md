@@ -98,7 +98,7 @@ GPU Device 0: "Pascal" with compute capability 6.1
 # Konw Issue
 
 Install k8s-device-plugin
-# https://github.com/NVIDIA/k8s-device-plugin/issues/332
+https://github.com/NVIDIA/k8s-device-plugin/issues/332
 
 # Argocd 
 
