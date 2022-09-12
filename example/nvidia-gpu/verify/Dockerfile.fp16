@@ -1,0 +1,2 @@
+FROM nvidia/samples:dcgmproftester-2.0.10-cuda11.0-ubuntu18.04
+RUN rm -rf /usr/lib/x86_64-linux-gnu/libnvidia-ml.so.1 /usr/lib/x86_64-linux-gnu/libcuda.so.1

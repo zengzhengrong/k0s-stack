@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tf-notebook
+  labels:
+    app: tf-notebook
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    name: http
+    targetPort: 8888
+  selector:
+    app: tf-notebook
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tf-notebook
+  labels:
+    app: tf-notebook
+spec:
+  securityContext:
+    fsGroup: 0
+  initContainers:
+  - name: init-tensorflow-docs
+    image: bitnami/git:latest
+    command: ['sh', '-c', "git clone https://github.com/tensorflow/docs.git /docs"]
+    volumeMounts:
+      - name: tmp
+        mountPath: /docs
+  containers:
+  - name: tf-notebook
+    image: tensorflow/tensorflow:latest-gpu-jupyter
+    resources:
+      limits:
+        nvidia.com/gpu: 0
+        cpu: 1
+        memory: 1024Mi
+    ports:
+    - containerPort: 8888
+      name: notebook
+    volumeMounts:
+      - name: tmp
+        mountPath: /tf
+  volumes:
+    - name: tmp
+      hostPath :
+        path: /tmp
+        type: DirectoryOrCreate
+        
+---
+# https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tf-notebook
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: notebook.localhost
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tf-notebook
+            port:
+              number: 80

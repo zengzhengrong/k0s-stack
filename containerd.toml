@@ -173,14 +173,9 @@ version = 2
     runtime_root = ""
     shim = "containerd-shim"
     shim_debug = false
-  [plugins."io.containerd.runtime.v2.task"]
-    platforms = ["linux/amd64"]
 
   [plugins."io.containerd.service.v1.diff-service"]
     default = ["walking"]
-
-  [plugins."io.containerd.service.v1.tasks-service"]
-    rdt_config_file = ""
 
   [plugins."io.containerd.snapshotter.v1.aufs"]
     root_path = ""
@@ -231,7 +226,6 @@ version = 2
   "io.containerd.timeout.shim.cleanup" = "5s"
   "io.containerd.timeout.shim.load" = "5s"
   "io.containerd.timeout.shim.shutdown" = "3s"
-  "io.containerd.timeout.task.state" = "2s"
 
 [ttrpc]
   address = ""

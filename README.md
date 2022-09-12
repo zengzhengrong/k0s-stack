@@ -29,6 +29,29 @@ sudo apt-get update
 sudo apt-get -y install cuda
 ```
 
+Check install
+
+```
+apt list  *nvidia*
+```
+
+Modify runtime 
+
+linux ```/etc/docker/daemon.json```
+windows ```~\.docker\daemon.json```
+
+```
+...
+  "runtimes": {
+    "nvidia": {
+      "path": "nvidia-container-runtime",
+      "runtimeArgs": []
+    }
+  }
+```
+
+restart docker
+
 1. Test GPU in wsl
 
 ```
@@ -39,6 +62,7 @@ docker run --rm -it --gpus=all nvcr.io/nvidia/k8s/cuda-sample:nbody nbody -gpu -
 ```
 docker-compose up -d
 ```
+Copy admin.cnof to your path of kubeconfig file
 
 4. Test GPU in k0s container
 
@@ -70,6 +94,11 @@ GPU Device 0: "Pascal" with compute capability 6.1
 = 107.874 billion interactions per second
 = 2157.472 single-precision GFLOP/s at 20 flops per interaction
 ```
+
+# Konw Issue
+
+Install k8s-device-plugin
+# https://github.com/NVIDIA/k8s-device-plugin/issues/332
 
 # Argocd 
 
