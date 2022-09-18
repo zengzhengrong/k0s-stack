@@ -10,6 +10,7 @@ services:
       - "/var/lib/k0s"
       - "./config.yaml:/etc/k0s/config.yaml"
       - "./admin.conf:/var/lib/k0s/pki/admin.conf"
+      - "./data:/var/openebs"
     tmpfs:
       - /run
       - /var/run
