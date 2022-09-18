@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: pulsar
+spec:
+  project: default
+  source:
+    repoURL: 'https://pulsar.apache.org/charts'
+    targetRevision: 2.9.4
+    helm:
+      parameters:
+        - name: volumes.persistence
+          value: 'false'
+        - name: broker.affinity.anti_affinity
+          value: 'false'
+        - name: components.pulsar_manager
+          value: 'true'
+        - name: components.autorecovery
+          value: 'false'
+        - name: zookeeper.replicaCount
+          value: '1'
+        - name: bookkeeper.replicaCount
+          value: '1'
+        - name: broker.replicaCount
+          value: '1'
+        # - name: broker.configData.managedLedgerDefaultAckQuorum
+        #   value: '1'
+        # - name: broker.configData.managedLedgerDefaultEnsembleSize
+        #   value: "1"
+        # - name: broker.configData.managedLedgerDefaultWriteQuorum
+        #   value: "1"
+        # - name: proxy.replicaCount
+        #   value: "1"
+        # - name: broker.configData
+        #   value: 
+        #       autoSkipNonRecoverableData: 'true'
+        #       managedLedgerDefaultWriteQuorum: '1'
+        #       managedLedgerDefaultEnsembleSize: '1'
+        #       managedLedgerDefaultAckQuorum: '1'
+        - name: monitoring.alert_manager
+          value: 'false'
+        - name: monitoring.prometheus
+          value: 'false'
+        - name: monitoring.node_exporter
+          value: 'false'
+        - name: monitoring.grafana
+          value: 'false'
+    chart: pulsar
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: pulsar
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
