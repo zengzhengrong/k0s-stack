@@ -170,6 +170,33 @@ spec:
                 automated:
                   prune: true
                   selfHeal: true
+            - name: openebs
+              finalizers:
+              - resources-finalizer.argocd.argoproj.io
+              project: default
+              source:
+                repoURL: 'https://openebs.github.io/charts'
+                targetRevision: 3.3.1
+                helm:
+                  parameters:
+                    - name: localpv-provisioner.enabled
+                      value: 'true'
+                    - name: ndm.enabled
+                      value: 'false'
+                    - name: provisioner.enabled
+                      value: 'false'
+                    - name: ndmOperator.enabled
+                      value: 'false'
+                chart: openebs
+              destination:
+                server: 'https://kubernetes.default.svc'
+                namespace: openebs
+              syncPolicy:
+                automated:
+                  prune: true
+                  selfHeal: true
+                syncOptions:
+                  - CreateNamespace=true
             - name: nvidia-operator
               finalizers:
               - resources-finalizer.argocd.argoproj.io
