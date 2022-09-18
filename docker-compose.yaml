@@ -21,3 +21,5 @@ services:
       - "8080:8080"
       - "8000:8000"
     network_mode: "bridge"
+    environment:
+      - HTTP_PROXY=http://192.168.2.100:7890
