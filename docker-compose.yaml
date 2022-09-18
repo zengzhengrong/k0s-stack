@@ -12,6 +12,7 @@ services:
       - "./containerd.toml:/etc/k0s/containerd.toml"
       - "./admin.conf:/var/lib/k0s/pki/admin.conf"
       - "./data:/var/openebs"
+      - "./airgap:/var/lib/k0s/images"
     tmpfs:
       - /run
       - /var/run
@@ -22,3 +23,5 @@ services:
       - "8080:8080"
       - "8000:8000"
     network_mode: "bridge"
+    environment:
+      - HTTP_PROXY=http://192.168.2.100:10811

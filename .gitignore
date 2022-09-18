@@ -4,3 +4,4 @@ cmd/argocd/argocd
 admin.conf
 data
 apps.yaml
+airgap
