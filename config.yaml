@@ -13,12 +13,6 @@ spec:
         chartname: argo/argo-cd
         namespace: default
         values: |
-          repoServer:
-            env:
-              - name: http_proxy
-                value: http://192.168.2.111:7890
-              - name: https_proxy
-                value: http://192.168.2.111:7890
           server:
             extraArgs:
               - --insecure
@@ -31,6 +25,14 @@ spec:
               hosts: 
                 - argocd.localhost
               ingressClassName: nginx
+            config:
+              exec.enabled: "true"
+              users.anonymous.enabled: "false"
+              accounts.zzr: apiKey, login
+              server.rbac.log.enforce.enable: "true"
+              passwordPattern: "^.{5,32}$"
+            rbacConfig:
+              policy.default: role:readonly
           configs:
             secret:
               argocdServerAdminPassword: $2a$10$geIjyqBxjeqyYesrQPe1deq9CyO04DKpIqT/BqJHvYl.Y0/LDf.p2
@@ -168,3 +170,30 @@ spec:
                 automated:
                   prune: true
                   selfHeal: true
+            - name: openebs
+              finalizers:
+              - resources-finalizer.argocd.argoproj.io
+              project: default
+              source:
+                repoURL: 'https://openebs.github.io/charts'
+                targetRevision: 3.3.1
+                helm:
+                  parameters:
+                    - name: localpv-provisioner.enabled
+                      value: 'true'
+                    - name: ndm.enabled
+                      value: 'false'
+                    - name: provisioner.enabled
+                      value: 'false'
+                    - name: ndmOperator.enabled
+                      value: 'false'
+                chart: openebs
+              destination:
+                server: 'https://kubernetes.default.svc'
+                namespace: openebs
+              syncPolicy:
+                automated:
+                  prune: true
+                  selfHeal: true
+                syncOptions:
+                  - CreateNamespace=true
