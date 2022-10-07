@@ -4,6 +4,8 @@ metadata:
   name: k0s
 spec:
   extensions:
+    storage:
+      type: openebs_local_storage
     helm:
       repositories:
       - name: argo
