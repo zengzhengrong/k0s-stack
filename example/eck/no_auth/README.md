@@ -1,4 +1,4 @@
 ## Anonymous Access
 
-elasticsearch: elasticsearch.localhost
-kibana: kibana.localhost
+[elasticsearch](elasticsearch.localhost): elasticsearch.localhost  
+[kibana](kibana.localhost): kibana.localhost  
