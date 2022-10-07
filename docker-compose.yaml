@@ -11,6 +11,7 @@ services:
       - "./config.yaml:/etc/k0s/config.yaml"
       - "./admin.conf:/var/lib/k0s/pki/admin.conf"
       - "./data:/var/openebs"
+      - "./airgap/bundle_file:/var/lib/k0s/images/bundle_file"
     tmpfs:
       - /run
       - /var/run

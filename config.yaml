@@ -4,6 +4,8 @@ metadata:
   name: k0s
 spec:
   extensions:
+    storage:
+      type: openebs_local_storage
     helm:
       repositories:
       - name: argo
@@ -13,6 +15,9 @@ spec:
         chartname: argo/argo-cd
         namespace: default
         values: |
+          controller:
+            args:
+              appResyncPeriod: "10"
           server:
             extraArgs:
               - --insecure
@@ -26,6 +31,7 @@ spec:
                 - argocd.localhost
               ingressClassName: nginx
             config:
+              timeout.reconciliation: 10s
               exec.enabled: "true"
               users.anonymous.enabled: "false"
               accounts.zzr: apiKey, login

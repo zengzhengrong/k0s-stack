@@ -4,3 +4,5 @@ cmd/argocd/argocd
 admin.conf
 data
 apps.yaml
+airgap/*file
+containerd.toml
