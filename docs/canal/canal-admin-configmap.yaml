@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: canal-admin
+  namespace: canal
+  labels:
+    app: canal-admin
+data:
+  canal.adminUser: admin
+  canal.adminPasswd: admin
+  server.port: "8089"
+  spring.datasource.address: sample-leader.radondb
+  spring.datasource.username: super_user
+  spring.datasource.database: canal_manager

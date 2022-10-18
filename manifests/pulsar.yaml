@@ -25,13 +25,13 @@ spec:
           value: '1'
         - name: broker.replicaCount
           value: '1'
+        - name: proxy.replicaCount
+          value: '1'
         # - name: broker.configData.managedLedgerDefaultAckQuorum
         #   value: '1'
         # - name: broker.configData.managedLedgerDefaultEnsembleSize
         #   value: "1"
         # - name: broker.configData.managedLedgerDefaultWriteQuorum
-        #   value: "1"
-        # - name: proxy.replicaCount
         #   value: "1"
         # - name: broker.configData
         #   value: 

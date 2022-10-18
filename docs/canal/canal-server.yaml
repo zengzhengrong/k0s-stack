@@ -1,0 +1,144 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: canal-server
+  namespace: canal
+spec:
+  selector:
+    matchLabels:
+      app: canal-server
+  serviceName: canal-server-headless
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: canal-server
+    spec:
+      terminationGracePeriodSeconds: 10
+      initContainers:
+      - name: wait-canal-admin
+        image: zengzhengrong889/box:1.0
+        command: 
+          - sh
+          - -c
+          - until curl -s -o /dev/null canal-admin.canal; do echo waiting for canal-admin; sleep 2; done; echo done
+      containers:
+      - name: canal-server
+        image: zengzhengrong889/canal_server:v1.16_hotfix
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 2Gi
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: CANAL_REGISTER_IP
+            value: "$(POD_NAME).canal-server-headless.$(POD_NAMESPACE)"
+          - name: CANAL_ADMIN_MANAGER
+            valueFrom:
+              configMapKeyRef:
+                name: canal-server
+                key: canal.admin.manager
+          - name: CANAL_ADMIN_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: canal-server
+                key: canal.admin.port
+          - name: CANAL_ADMIN_USER
+            valueFrom:
+              configMapKeyRef:
+                name: canal-server
+                key: canal.admin.user
+          - name: CANAL_ADMIN_PASSWD
+            valueFrom:
+              secretKeyRef:
+                name: canal-server
+                key: canal.admin.passwd
+          - name: CANAL_ADMIN_REGISTER_AUTO
+            valueFrom:
+              configMapKeyRef:
+                name: canal-server
+                key: canal.admin.register.auto
+          - name: CANAL_ADMIN_REGISTER_CLUSTER
+            valueFrom:
+              configMapKeyRef:
+                name: canal-server
+                key: canal.admin.register.cluster
+          - name: CANAL_ADMIN_REGISTER_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: canal-server
+                key: canal.admin.register.name
+        ports:
+          - containerPort: 11110
+            name: admin-port
+          - containerPort: 11111
+            name: canal-port
+          - containerPort: 11112
+            name: metrics-port
+        volumeMounts:
+        - name: logs
+          mountPath: /canal-server/logs
+          subPath: logs
+  volumeClaimTemplates:
+  - metadata:
+      labels:
+        app: canal-server
+      name: logs
+      namespace: canal
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "openebs-hostpath"
+      resources:
+        requests:
+          storage: 10Gi
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: canal-server
+  namespace: canal
+spec:
+  selector:
+    app: canal-server
+  type: ClusterIP
+  ports:
+  - name: admin-port
+    port: 11110
+    targetPort: admin-port
+  - name: canal-port
+    port: 11111
+    targetPort: canal-port
+  - name: metrics-port
+    port: 11112
+    targetPort: metrics-port
+---
+# Service Headless
+kind: Service
+apiVersion: v1
+metadata:
+  name: canal-server-headless
+  namespace: canal
+spec:
+  clusterIP: None
+  selector:
+    app: canal-server
+  ports:
+  - name: admin-port
+    port: 11110
+    targetPort: admin-port
+  - name: canal-port
+    port: 11111
+    targetPort: canal-port
+  - name: metrics-port
+    port: 11112
+    targetPort: metrics-port

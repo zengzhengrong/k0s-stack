@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: canal
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/zengzhengrong/k0s-stack'
+    path: docs/canal/
+    targetRevision: preview
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: canal
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
