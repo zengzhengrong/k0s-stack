@@ -168,7 +168,7 @@ spec:
                 targetRevision: HEAD
               syncPolicy:
                 syncOptions:
-                  - CreateNamespace=true
+                - CreateNamespace=true
             - name: openebs
               finalizers:
               - resources-finalizer.argocd.argoproj.io
@@ -206,7 +206,7 @@ spec:
                 namespace: radondb
               syncPolicy:
                 syncOptions:
-                  - CreateNamespace=true
+                - CreateNamespace=true
             - name: radondb-sample
               finalizers:
               - resources-finalizer.argocd.argoproj.io
@@ -220,7 +220,7 @@ spec:
                 namespace: radondb
               syncPolicy:
                 syncOptions:
-                  - CreateNamespace=true
+                - CreateNamespace=true
             - name: rocketmq
               finalizers:
               - resources-finalizer.argocd.argoproj.io
@@ -246,7 +246,7 @@ spec:
                 namespace: rocketmq
               syncPolicy:
                 syncOptions:
-                  - CreateNamespace=true
+                - CreateNamespace=true
             - name: rocketmq-cli
               finalizers:
               - resources-finalizer.argocd.argoproj.io
@@ -260,4 +260,4 @@ spec:
                 namespace: rocketmq
               syncPolicy:
                 syncOptions:
-                  - CreateNamespace=true
+                - CreateNamespace=true
