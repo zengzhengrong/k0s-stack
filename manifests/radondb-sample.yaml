@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: radondb-sample
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/zengzhengrong/k0s-stack'
+    path: docs/radondb/sample_5.7_mysqlcluster/
+    targetRevision: preview
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: radondb
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
