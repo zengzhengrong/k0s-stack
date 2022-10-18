@@ -8,8 +8,8 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/zengzhengrong/k0s-stack'
-    path: example/rocketmq/rocketmq-cli/
-    targetRevision: zh-cn
+    path: docs/rocketmq/rocketmq-cli/
+    targetRevision: preview
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: rocketmq

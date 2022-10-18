@@ -3,16 +3,16 @@ kind: Application
 metadata:
   finalizers:
   - resources-finalizer.argocd.argoproj.io
-  name: argo-rollouts-demo
+  name: canal
 spec:
   project: default
   source:
     repoURL: 'https://github.com/zengzhengrong/k0s-stack'
-    path: docs/argo-rollouts/demo
-    targetRevision: zh-cn
+    path: docs/canal/
+    targetRevision: preview
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: argo
+    namespace: canal
   syncPolicy:
     syncOptions:
       - CreateNamespace=true

@@ -8,8 +8,8 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/zengzhengrong/k0s-stack'
-    path: example/eck/no_auth
-    targetRevision: zh-cn
+    path: docs/eck/no_auth
+    targetRevision: preview
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: eck-stack

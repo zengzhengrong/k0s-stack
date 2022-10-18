@@ -1,0 +1,165 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  canal-admin
+  namespace: canal
+  labels:
+    app:  canal-admin
+spec:
+  selector:
+    matchLabels:
+      app: canal-admin
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app:  canal-admin
+    spec:
+      initContainers:
+      - name: wait-db
+        image: smartlyio/wait-for-it
+        imagePullPolicy: IfNotPresent
+        args: ["$(MYSQL_HOST):3306","--","echo","done"]
+        env:
+          - name: MYSQL_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: canal-admin
+                key: spring.datasource.address
+      - name: init-sql
+        image: imega/mysql-client
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: MYSQL_USER
+            valueFrom:
+              configMapKeyRef:
+                name: canal-admin
+                key: spring.datasource.username
+          - name: MYSQL_USER_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: canal-admin
+                key: spring.datasource.password
+          - name: MYSQL_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: canal-admin
+                key: spring.datasource.address
+          - name: MYSQL_DB_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: canal-admin
+                key: spring.datasource.database
+        command:
+          - mysql
+          - --host=$(MYSQL_HOST)
+          - --user=$(MYSQL_USER)
+          - --password=$(MYSQL_USER_PASSWORD)
+          - --execute=source /docker-entrypoint-initdb.d/canal_manager.sql
+        volumeMounts:
+          - name: canal-admin-init-sql
+            mountPath: /docker-entrypoint-initdb.d/canal_manager.sql
+            subPath: canal_manager.sql
+      containers:
+      - name: canal-admin
+        image: zengzhengrong889/canal_admin:v1.16_hotfix
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: "1"
+            memory: 2Gi
+        env:
+          - name: SPRING_DATASOURCE_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: canal-admin
+                key: spring.datasource.username
+          - name: SPRING_DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: canal-admin
+                key: spring.datasource.password
+          - name: SPRING_DATASOURCE_ADDRESS
+            valueFrom:
+              configMapKeyRef:
+                name: canal-admin
+                key: spring.datasource.address
+          - name: SPRING_DATASOURCE_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: canal-admin
+                key: spring.datasource.database
+          - name: SERVER_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: canal-admin
+                key: server.port
+          - name: CANAL_ADMINUSER
+            valueFrom:
+              configMapKeyRef:
+                name: canal-admin
+                key: canal.adminUser
+          - name: CANAL_ADMINPASSWD
+            valueFrom:
+              configMapKeyRef:
+                name: canal-admin
+                key: canal.adminPasswd
+        ports:
+        - containerPort:  8089
+          protocol: TCP
+          name: canal-admin
+        volumeMounts:
+        - name: localtime
+          mountPath: /etc/localtime
+        - name: logs
+          mountPath: /canal-admin/logs
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+        - name: canal-admin-init-sql
+          configMap:
+            name: canal-admin-init-sql
+        - name: logs
+          persistentVolumeClaim:
+            claimName: canal-admin
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: canal-admin
+  namespace: canal
+spec:
+  selector:
+    app: canal-admin
+  type: ClusterIP
+  ports:
+  - name: canal-admin
+    port:  80
+    targetPort: canal-admin
+
+---
+# https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: canal-admin
+  namespace: canal
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: canal-admin.localhost
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: canal-admin
+            port:
+              number: 80
