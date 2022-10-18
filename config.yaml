@@ -66,16 +66,6 @@ spec:
                 chart: ingress-nginx
                 helm:
                   parameters:
-                  - name: controller.admissionWebhooks.patch.image.image
-                    value: google_containers/kube-webhook-certgen
-                  - name: controller.admissionWebhooks.patch.image.digest
-                    value: sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660
-                  - name: controller.admissionWebhooks.patch.image.registry
-                    value: registry.aliyuncs.com
-                  - name: controller.image.image
-                    value: google_containers/nginx-ingress-controller
-                  - name: controller.image.registry
-                    value: registry.aliyuncs.com
                   - name: controller.service.type
                     value: NodePort
                   - name: controller.service.nodePorts.http
@@ -120,7 +110,7 @@ spec:
               syncPolicy:
                 automated:
                   prune: true
-                  allowEmpty: false
+                  selfHeal: true
                 syncOptions:
                 - CreateNamespace=true
             - name: argo-events
@@ -135,7 +125,7 @@ spec:
               syncPolicy: 
                 automated:
                   prune: true
-                  allowEmpty: false
+                  selfHeal: true
                 syncOptions:
                 - CreateNamespace=true
             - name: argo-rollouts
@@ -162,7 +152,7 @@ spec:
               syncPolicy: 
                 automated:
                   prune: true
-                  allowEmpty: false
+                  selfHeal: true
                 syncOptions:
                 - CreateNamespace=true
             - name: argocd-image-updater
@@ -177,9 +167,8 @@ spec:
                 repoURL: https://github.com/argoproj-labs/argocd-image-updater
                 targetRevision: HEAD
               syncPolicy:
-                automated:
-                  prune: true
-                  selfHeal: true
+                syncOptions:
+                  - CreateNamespace=true
             - name: openebs
               finalizers:
               - resources-finalizer.argocd.argoproj.io
@@ -202,9 +191,6 @@ spec:
                 server: 'https://kubernetes.default.svc'
                 namespace: openebs
               syncPolicy:
-                automated:
-                  prune: true
-                  selfHeal: true
                 syncOptions:
                   - CreateNamespace=true
             - name: radondb-operator
@@ -219,9 +205,59 @@ spec:
                 server: 'https://kubernetes.default.svc'
                 namespace: radondb
               syncPolicy:
-                automated:
-                  prune: true
-                  selfHeal: true
                 syncOptions:
                   - CreateNamespace=true
-
+            - name: radondb-sample
+              finalizers:
+              - resources-finalizer.argocd.argoproj.io
+              project: default
+              source:
+                repoURL: 'https://github.com/zengzhengrong/k0s-stack'
+                path: docs/radondb/sample_5.7_mysqlcluster/
+                targetRevision: preview
+              destination:
+                server: 'https://kubernetes.default.svc'
+                namespace: radondb
+              syncPolicy:
+                syncOptions:
+                  - CreateNamespace=true
+            - name: rocketmq
+              finalizers:
+              - resources-finalizer.argocd.argoproj.io
+              project: default
+              source:
+                repoURL: 'https://zengzhengrong.github.io/helm-charts'
+                targetRevision: 4.9.4
+                helm:
+                  parameters:
+                    - name: ingress.enabled
+                      value: 'true'
+                    - name: 'broker.envs[1].name'
+                      value: TZ
+                    - name: 'broker.envs[1].value'
+                      value: Asia/Shanghai
+                    - name: 'broker.envs[0].name'
+                      value: JAVA_OPT_EXT
+                    - name: 'broker.envs[0].value'
+                      value: '-server -Xms512m -Xmx512m -Xmn512m'
+                chart: rocketmq
+              destination:
+                server: 'https://kubernetes.default.svc'
+                namespace: rocketmq
+              syncPolicy:
+                syncOptions:
+                  - CreateNamespace=true
+            - name: rocketmq-cli
+              finalizers:
+              - resources-finalizer.argocd.argoproj.io
+              project: default
+              source:
+                repoURL: 'https://github.com/zengzhengrong/k0s-stack'
+                path: docs/rocketmq/rocketmq-cli/
+                targetRevision: preview
+              destination:
+                server: 'https://kubernetes.default.svc'
+                namespace: rocketmq
+              syncPolicy:
+                syncOptions:
+                  - CreateNamespace=true

@@ -20,7 +20,13 @@ spec:
       - name: wait-db
         image: smartlyio/wait-for-it
         imagePullPolicy: IfNotPresent
-        args: ["sample-leader.radondb:3306","--","echo","done"]
+        args: ["$(MYSQL_HOST):3306","--","echo","done"]
+        env:
+          - name: MYSQL_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: canal-admin
+                key: spring.datasource.address
       - name: init-sql
         image: imega/mysql-client
         imagePullPolicy: IfNotPresent
