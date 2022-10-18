@@ -1,0 +1,46 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rocketmq-cli
+  namespace: rocketmq
+  labels:
+    app: rocketmq-cli
+spec:
+  selector:
+    matchLabels:
+      app: rocketmq-cli
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rocketmq-cli
+    spec:
+      containers:
+      - name: rocketmq-cli
+        image: docker.io/zengzhengrong889/rocketmq-cli:latest
+        imagePullPolicy: IfNotPresent
+        args:
+          - "consumer"
+          - "--autocreate"
+          - "-b"
+          - "rocketmq-broker-a-0.rocketmq-broker-a-hl:10911"
+          - "-s"
+          - "http://rocketmq-namesrv-hl:9876"
+          - "-t"
+          - "test"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai
+      restartPolicy: Always

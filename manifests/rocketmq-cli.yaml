@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: rocketmq-cli
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/zengzhengrong/k0s-stack'
+    path: docs/rocketmq/rocketmq-cli/
+    targetRevision: preview
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: rocketmq
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

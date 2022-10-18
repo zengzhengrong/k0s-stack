@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: canal-server
+  namespace: canal
+  labels:
+    app: canal-server
+data:
+  canal.register.ip: ''
+  canal.admin.manager: 'canal-admin'
+  canal.admin.port: '11110'
+  canal.admin.user: 'admin'
+  canal.admin.register.auto: 'true'
+  canal.admin.register.cluster: 'local'
+  canal.admin.register.name: ''

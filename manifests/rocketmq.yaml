@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: rocketmq
+spec:
+  project: default
+  source:
+    repoURL: 'https://zengzhengrong.github.io/helm-charts'
+    targetRevision: 4.9.4
+    helm:
+      parameters:
+        - name: ingress.enabled
+          value: 'true'
+        - name: 'broker.envs[1].name'
+          value: TZ
+        - name: 'broker.envs[1].value'
+          value: Asia/Shanghai
+        - name: 'broker.envs[0].name'
+          value: JAVA_OPT_EXT
+        - name: 'broker.envs[0].value'
+          value: '-server -Xms512m -Xmx512m -Xmn512m'
+    chart: rocketmq
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: rocketmq
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
