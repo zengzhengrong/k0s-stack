@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/zengzhengrong/k0s-stack'
-    path: example/eck/no_auth
+    path: docs/eck/no_auth
     targetRevision: zh-cn
   destination:
     server: 'https://kubernetes.default.svc'

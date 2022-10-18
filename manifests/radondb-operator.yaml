@@ -1,0 +1,21 @@
+# https://github.com/radondb/radondb-mysql-kubernetes/blob/main/docs/en-us/deploy_radondb-mysql_operator_on_k8s.md
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: radondb-operator
+spec:
+  project: default
+  source:
+    repoURL: 'https://radondb.github.io/radondb-mysql-kubernetes/'
+    targetRevision: 2.2.1
+    chart: mysql-operator
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: radondb
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+
+
