@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  zkui
+  namespace: zookeeper
+  labels:
+    app:  zkui
+spec:
+  selector:
+    matchLabels:
+      app: zkui
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app:  zkui
+    spec:
+      containers:
+      - name:  zkui
+        image:  juris/zkui
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: ZK_SERVER
+          value: zookeeper:2181
+        ports:
+        - containerPort:  9090
+          name:  zkui
+      restartPolicy: Always
+  
+---
+# https://kubernetes.io/docs/concepts/services-networking/service/
+apiVersion: v1
+kind: Service
+metadata:
+  name: zkui
+  namespace: zookeeper
+spec:
+  selector:
+    app: zkui
+  type: ClusterIP
+  ports:
+  - name: zkui
+    protocol: TCP
+    port: 80
+    targetPort: 9090
+---
+# https://kubernetes.io/docs/concepts/services-networking/ingress/
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zkui
+  namespace: zookeeper
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: zkui.localhost
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: zkui
+            port:
+              number: 80
+---
