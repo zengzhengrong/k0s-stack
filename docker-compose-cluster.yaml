@@ -7,6 +7,7 @@ services:
     hostname: k0s
     privileged: true
     volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
       - "./entrypoint.sh:/entrypoint.sh"
       - "/var/lib/k0s"
       - "./config.yaml:/etc/k0s/config.yaml"
@@ -32,6 +33,7 @@ services:
     hostname: k0s-worker1
     privileged: true
     volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
       - "./entrypoint-worker.sh:/entrypoint-worker.sh"
       - "/var/lib/k0s"
       - "./data:/var/openebs"
