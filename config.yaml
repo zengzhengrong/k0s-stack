@@ -4,8 +4,6 @@ metadata:
   name: k0s
 spec:
   extensions:
-    storage:
-      type: openebs_local_storage
     helm:
       repositories:
       - name: argo
@@ -14,6 +12,7 @@ spec:
       - name: argocd
         chartname: argo/argo-cd
         namespace: default
+        version: "5.6.0"
         values: |
           controller:
             args:
@@ -66,6 +65,14 @@ spec:
                 chart: ingress-nginx
                 helm:
                   parameters:
+                  - name: controller.tolerations[0].key
+                    value: node-role.kubernetes.io/master
+                  - name: controller.tolerations[0].operator
+                    value: Exists
+                  - name: controller.tolerations[0].effect
+                    value: NoSchedule
+                  - name: controller.nodeSelector.\node\.k0sproject\.io/role
+                    value: control-plane
                   - name: controller.service.type
                     value: NodePort
                   - name: controller.service.nodePorts.http
@@ -155,27 +162,13 @@ spec:
                   selfHeal: true
                 syncOptions:
                 - CreateNamespace=true
-            - name: argocd-image-updater
-              finalizers:
-              - resources-finalizer.argocd.argoproj.io
-              destination:
-                namespace: argo
-                server: https://kubernetes.default.svc
-              project: default
-              source:
-                path: manifests/base
-                repoURL: https://github.com/argoproj-labs/argocd-image-updater
-                targetRevision: HEAD
-              syncPolicy:
-                syncOptions:
-                - CreateNamespace=true
             - name: openebs
               finalizers:
               - resources-finalizer.argocd.argoproj.io
               project: default
               source:
                 repoURL: 'https://openebs.github.io/charts'
-                targetRevision: 3.3.1
+                targetRevision: 3.0.3
                 helm:
                   parameters:
                     - name: localpv-provisioner.enabled
@@ -191,93 +184,8 @@ spec:
                 server: 'https://kubernetes.default.svc'
                 namespace: openebs
               syncPolicy:
+                automated:
+                  prune: true
+                  selfHeal: true
                 syncOptions:
                   - CreateNamespace=true
-            - name: radondb-operator
-              finalizers:
-              - resources-finalizer.argocd.argoproj.io
-              project: default
-              source:
-                repoURL: 'https://radondb.github.io/radondb-mysql-kubernetes/'
-                targetRevision: 2.2.1
-                chart: mysql-operator
-              destination:
-                server: 'https://kubernetes.default.svc'
-                namespace: radondb
-              syncPolicy:
-                syncOptions:
-                - CreateNamespace=true
-            - name: radondb-sample
-              finalizers:
-              - resources-finalizer.argocd.argoproj.io
-              project: default
-              source:
-                repoURL: 'https://github.com/zengzhengrong/k0s-stack'
-                path: docs/radondb/sample_5.7_mysqlcluster/
-                targetRevision: preview
-              destination:
-                server: 'https://kubernetes.default.svc'
-                namespace: radondb
-              syncPolicy:
-                syncOptions:
-                - CreateNamespace=true
-            - name: rocketmq
-              finalizers:
-              - resources-finalizer.argocd.argoproj.io
-              project: default
-              source:
-                repoURL: 'https://zengzhengrong.github.io/helm-charts'
-                targetRevision: 4.9.4
-                helm:
-                  parameters:
-                    - name: ingress.enabled
-                      value: 'true'
-                    - name: 'broker.envs[1].name'
-                      value: TZ
-                    - name: 'broker.envs[1].value'
-                      value: Asia/Shanghai
-                    - name: 'broker.envs[0].name'
-                      value: JAVA_OPT_EXT
-                    - name: 'broker.envs[0].value'
-                      value: '-server -Xms512m -Xmx512m -Xmn512m'
-                chart: rocketmq
-              destination:
-                server: 'https://kubernetes.default.svc'
-                namespace: rocketmq
-              syncPolicy:
-                syncOptions:
-                - CreateNamespace=true
-            - name: rocketmq-cli
-              finalizers:
-              - resources-finalizer.argocd.argoproj.io
-              project: default
-              source:
-                repoURL: 'https://github.com/zengzhengrong/k0s-stack'
-                path: docs/rocketmq/rocketmq-cli/
-                targetRevision: preview
-              destination:
-                server: 'https://kubernetes.default.svc'
-                namespace: rocketmq
-              syncPolicy:
-                syncOptions:
-                - CreateNamespace=true
-            - name: nvidia-operator
-              finalizers:
-              - resources-finalizer.argocd.argoproj.io
-              project: default
-              source:
-                repoURL: 'https://nvidia.github.io/gpu-operator'
-                targetRevision: v1.11.1
-                helm:
-                  parameters:
-                    - name: toolkit.enabled
-                      value: 'false'
-                    - name: driver.enabled
-                      value: 'false'
-                chart: gpu-operator
-              destination:
-                server: 'https://kubernetes.default.svc'
-                namespace: nvidia-operator
-              syncPolicy:
-                syncOptions:
-                - CreateNamespace=true

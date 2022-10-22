@@ -2,63 +2,6 @@
 k0s argo stack is pretty simple setup kubernetes by use docker compose
 
 # Usage
-
-Enable wsl on ubuntu and install cuda
-
-1. 
-
-```
-wsl --list --online
-wsl --install --distribution <Distribution Name>
-```
-or manual https://docs.microsoft.com/en-us/windows/wsl/install-manual
-
-
-![Docker](https://github.com/zengzhengrong/k0s-stack/blob/nvidia-container-runtime/image/docker.png)
-
-
-https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl
-
-
-```
-wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-wsl-ubuntu.pin
-sudo mv cuda-wsl-ubuntu.pin /etc/apt/preferences.d/cuda-repository-pin-600
-wget https://developer.download.nvidia.com/compute/cuda/11.7.0/local_installers/cuda-repo-wsl-ubuntu-11-7-local_11.7.0-1_amd64.deb
-sudo dpkg -i cuda-repo-wsl-ubuntu-11-7-local_11.7.0-1_amd64.deb
-sudo apt-get update
-sudo apt-get -y install cuda
-```
-
-Check install
-
-```
-apt list  *nvidia*
-```
-
-Modify runtime 
-
-linux ```/etc/docker/daemon.json```
-windows ```~\.docker\daemon.json```
-
-```
-...
-  "runtimes": {
-    "nvidia": {
-      "path": "nvidia-container-runtime",
-      "runtimeArgs": []
-    }
-  }
-```
-
-restart docker
-
-1. Test GPU in wsl
-
-```
-docker run --rm -it --gpus=all nvcr.io/nvidia/k8s/cuda-sample:nbody nbody -gpu -benchmark
-```
-
-3. Start k0s
 ```
 docker-compose up -d
 ```
@@ -108,19 +51,19 @@ Access UI [argocd](http://argocd.localhost/) by default  username ```admin``` pa
 
 # Argocd Applications
 
-[manifest](https://github.com/zengzhengrong/k0s-stack/tree/zh-cn/manifests):
-
 1. argo-event *
 2. argo-rollouts *
 3. argo-workflows *
-4. eck-operator
-5. eck-stack-noauth (require eck-operator)
-6. openebs (local-path only) *
-7. ingress-nginx *
+4. openebs (local-path only) *
+5. ingress-nginx *
+6. eck-operator
+7. eck-stack-noauth (require eck-operator)
 8. pulsar (does not work)
 9. rocketmq
-10. rocketmq-cli (require rocketmq, validate rocketmq work fine)
+10.  rocketmq-cli (require rocketmq, validate rocketmq work fine)
 
+
+See more [manifest](https://github.com/zengzhengrong/k0s-stack/tree/zh-cn/manifests)
 
 Flag ```*``` is already installed by default
 # Airgap

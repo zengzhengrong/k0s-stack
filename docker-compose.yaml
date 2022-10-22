@@ -10,7 +10,6 @@ services:
     volumes:
       - "/var/lib/k0s"
       - "./config.yaml:/etc/k0s/config.yaml"
-      - "./containerd.toml:/etc/k0s/containerd.toml"
       - "./admin.conf:/var/lib/k0s/pki/admin.conf"
       - "./data:/var/openebs"
       - "./airgap/bundle_file:/var/lib/k0s/images/bundle_file"
