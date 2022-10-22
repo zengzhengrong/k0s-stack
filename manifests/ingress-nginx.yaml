@@ -22,6 +22,14 @@ spec:
       #   value: google_containers/nginx-ingress-controller
       # - name: controller.image.registry
       #   value: registry.aliyuncs.com
+      - name: controller.tolerations[0].key
+        value: node-role.kubernetes.io/master
+      - name: controller.tolerations[0].operator
+        value: Exists
+      - name: controller.tolerations[0].effect
+        value: NoSchedule
+      - name: controller.nodeSelector.\node\.k0sproject\.io/role
+        value: control-plane
       - name: controller.service.type
         value: NodePort
       - name: controller.service.nodePorts.http
