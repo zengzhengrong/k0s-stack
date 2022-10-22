@@ -6,3 +6,4 @@ data
 apps.yaml
 airgap/*file
 containerd.toml
+token
