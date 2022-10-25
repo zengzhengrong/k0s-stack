@@ -7,6 +7,7 @@ services:
     hostname: k0s
     privileged: true
     volumes:
+      - "./certs.d:/etc/containerd/certs.d"
       - "/var/lib/k0s"
       - "./config.yaml:/etc/k0s/config.yaml"
       - "./admin.conf:/var/lib/k0s/pki/admin.conf"
