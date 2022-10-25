@@ -8,6 +8,7 @@ services:
     privileged: true
     volumes:
       - "./entrypoint.sh:/entrypoint.sh"
+      - "./certs.d:/etc/containerd/certs.d"
       - "/var/lib/k0s"
       - "./config.yaml:/etc/k0s/config.yaml"
       - "./admin.conf:/var/lib/k0s/pki/admin.conf"
@@ -33,6 +34,7 @@ services:
     privileged: true
     volumes:
       - "./entrypoint-worker.sh:/entrypoint-worker.sh"
+      - "./certs.d:/etc/containerd/certs.d"
       - "/var/lib/k0s"
       - "./data:/var/openebs"
       - "./airgap/bundle_file:/var/lib/k0s/images/bundle_file"
