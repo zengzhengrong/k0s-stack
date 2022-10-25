@@ -16,6 +16,19 @@ Default one control-plane container and two wroker container , Ingress inside co
 docker-compose -f .\docker-compose-cluster.yaml up -d
 ```
 
+#### Access by kubectl
+
+```
+export KUBECONFIG=$(PWD)/admin.conf
+
+kubectl get node -w
+NAME          STATUS     ROLES           AGE   VERSION
+k0s           NotReady   control-plane   60s   v1.23.10+k0s
+k0s-worker1   NotReady   worker          60s   v1.23.10+k0s
+k0s-worker2   NotReady   worker          60s   v1.23.10+k0s
+```
+
+
 # Argocd 
 
 
@@ -48,3 +61,7 @@ See airgap directory
 
 1.openebs issues in wsl https://github.com/openebs/openebs/issues/3487  
 2.Only use local path pv
+
+### RPrivate egistry
+
+https://github.com/containerd/containerd/blob/main/docs/cri/registry.md
