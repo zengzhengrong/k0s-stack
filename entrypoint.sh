@@ -9,7 +9,7 @@ time=$(date "+%Y%m%d")
 if [ -f "/var/token/k0s.token" ]; then 
     echo "$time" 
     echo "token exits" 
-    k0s controller
+    k0s controller --config=/etc/k0s/config.yaml --enable-worker
 else
     mkdir -p /etc/k0s
     echo '''
@@ -19,7 +19,7 @@ else
     ''' >> /etc/k0s/containerd.toml
     nohup k0s controller --config=/etc/k0s/config.yaml --enable-worker > k0s.log 2>&1 &
 
-    sleep 5
+    sleep 10
 
     k0s token create --role=worker > /var/token/k0s.token
 
