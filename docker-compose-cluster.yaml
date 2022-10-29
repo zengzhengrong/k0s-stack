@@ -2,12 +2,13 @@ version: "3.9"
 services:
   k0s-master:
     container_name: k0s
-    image: docker.io/k0sproject/k0s:latest
+    image: docker.io/k0sproject/k0s:v1.23.10-k0s.0
     entrypoint: ["sh","entrypoint.sh"]
     hostname: k0s
     privileged: true
     volumes:
       - "./entrypoint.sh:/entrypoint.sh"
+      - "./certs.d:/etc/containerd/certs.d"
       - "/var/lib/k0s"
       - "./config.yaml:/etc/k0s/config.yaml"
       - "./admin.conf:/var/lib/k0s/pki/admin.conf"
@@ -27,12 +28,13 @@ services:
     network_mode: "bridge"
   k0s-worker1: &k0s-worker
     container_name: k0s-worker1
-    image: docker.io/k0sproject/k0s:latest
+    image: docker.io/k0sproject/k0s:v1.23.10-k0s.0
     entrypoint: ["sh","entrypoint-worker.sh","/var/token/k0s.token"]
     hostname: k0s-worker1
     privileged: true
     volumes:
       - "./entrypoint-worker.sh:/entrypoint-worker.sh"
+      - "./certs.d:/etc/containerd/certs.d"
       - "/var/lib/k0s"
       - "./data:/var/openebs"
       - "./airgap/bundle_file:/var/lib/k0s/images/bundle_file"

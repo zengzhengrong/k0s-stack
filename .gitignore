@@ -7,3 +7,4 @@ apps.yaml
 airgap/*file
 containerd.toml
 token
+.DS_Store

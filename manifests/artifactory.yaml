@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: artifactory
+spec:
+  destination:
+    namespace: artifactory
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://charts.jfrog.io'
+    targetRevision: 107.46.6
+    chart: artifactory
+    helm:
+      parameters:
+        - name: postgresql.enabled
+          value: 'false'
+        - name: ingress.className
+          value: nginx
+        - name: ingress.enabled
+          value: 'true'
+        - name: 'ingress.hosts[0]'
+          value: artifactory.localhost
+        - name: artifactory.admin.password
+          value: admin
+        - name: artifactory.persistence.storageClassName
+          value: openebs-hostpath
+        - name: observability.enabled
+          value: 'false'
+        - name: nginx.service.type
+          value: ClusterIP
+  project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

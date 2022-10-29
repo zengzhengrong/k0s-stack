@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  ngxin
+  namespace: default
+  labels:
+    app:  ngxin
+spec:
+  selector:
+    matchLabels:
+      app: ngxin
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app:  ngxin
+    spec:
+      imagePullSecrets:
+        - name: k0s-registry
+      containers:
+      - name:  ngxin
+        image: artifactory.localhost/k0s/nginx:latest
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort:  80
+          name:  ngxin
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name:  nginx
+spec:
+  selector:
+    app:  nginx
+  type:  ClusterIP
+  ports:
+  - name:  name-of-the-port
+    port:  80
+    targetPort:  80
+
+---
+# https://kubernetes.io/docs/concepts/services-networking/ingress/
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx
+  namespace: default
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: nginx-jcr.localhost
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80
+---

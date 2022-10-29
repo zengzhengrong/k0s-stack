@@ -4,7 +4,7 @@ kind: Application
 metadata:
   finalizers:
   - resources-finalizer.argocd.argoproj.io
-  name: radondb-operator
+  name: radondb-mysql-operator
 spec:
   project: default
   source:
@@ -13,7 +13,7 @@ spec:
     chart: mysql-operator
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: radondb
+    namespace: radondb-mysql
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
