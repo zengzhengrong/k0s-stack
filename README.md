@@ -43,7 +43,7 @@ Access UI [argocd](http://argocd.localhost/) by default  username ```admin``` pa
 5. ingress-nginx *
 6. eck-operator
 7. eck-stack-noauth (require eck-operator)
-8. pulsar (does not work)
+8. pulsar 
 9. rocketmq
 10.  rocketmq-cli (require rocketmq, validate rocketmq work fine)
 

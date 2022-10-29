@@ -38,6 +38,8 @@ spec:
           value: 'false'
         - name: artifactory.nginx.service.type
           value: ClusterIP
+        - name: artifactory.nginx.enabled
+          value: 'false'
   project: default
   syncPolicy:
     syncOptions:

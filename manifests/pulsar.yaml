@@ -11,14 +11,28 @@ spec:
     targetRevision: 2.9.4
     helm:
       parameters:
+        - name: images.pulsar_manager.tag
+          value: 'v0.2.0'
         - name: volumes.persistence
           value: 'false'
         - name: broker.affinity.anti_affinity
           value: 'false'
         - name: components.pulsar_manager
           value: 'true'
-        - name: components.autorecovery
+        - name: pulsar_manager.service.type
+          value: 'ClusterIP'
+        - name: pulsar_manager.ingress.enabled
+          value: 'true'
+        - name: pulsar_manager.ingress.hostname
+          value: 'pulsarmanager.localhost'
+        - name: pulsar_manager.ingress.annotations.kubernetes\.io/ingress\.class
+          value: nginx
+        - name: pulsar_manager.restartPodsOnConfigMapChange
           value: 'false'
+        - name: proxy.service.type
+          value: 'ClusterIP'
+        - name: components.autorecovery
+          value: 'true'
         - name: zookeeper.replicaCount
           value: '1'
         - name: bookkeeper.replicaCount
@@ -27,18 +41,18 @@ spec:
           value: '1'
         - name: proxy.replicaCount
           value: '1'
-        # - name: broker.configData.managedLedgerDefaultAckQuorum
-        #   value: '1'
-        # - name: broker.configData.managedLedgerDefaultEnsembleSize
-        #   value: "1"
-        # - name: broker.configData.managedLedgerDefaultWriteQuorum
-        #   value: "1"
-        # - name: broker.configData
-        #   value: 
-        #       autoSkipNonRecoverableData: 'true'
-        #       managedLedgerDefaultWriteQuorum: '1'
-        #       managedLedgerDefaultEnsembleSize: '1'
-        #       managedLedgerDefaultAckQuorum: '1'
+        - name: broker.configData.managedLedgerDefaultAckQuorum
+          value: '1'
+          forceString: true
+        - name: broker.configData.managedLedgerDefaultEnsembleSize
+          value: '1'
+          forceString: true
+        - name: broker.configData.managedLedgerDefaultWriteQuorum
+          value: '1'
+          forceString: true
+        - name: broker.configData.autoSkipNonRecoverableData
+          value: 'true'
+          forceString: true
         - name: monitoring.alert_manager
           value: 'false'
         - name: monitoring.prometheus
@@ -46,6 +60,8 @@ spec:
         - name: monitoring.node_exporter
           value: 'false'
         - name: monitoring.grafana
+          value: 'false'
+        - name: kube-prometheus-stack.enabled
           value: 'false'
     chart: pulsar
   destination:

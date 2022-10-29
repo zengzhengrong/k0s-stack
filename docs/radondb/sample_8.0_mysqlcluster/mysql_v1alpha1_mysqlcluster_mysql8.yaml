@@ -2,6 +2,7 @@ apiVersion: mysql.radondb.com/v1alpha1
 kind: MysqlCluster
 metadata:
   name: sample
+  namespace: radondb-mysql
 spec:
   replicas: 3
   mysqlVersion: "8.0"

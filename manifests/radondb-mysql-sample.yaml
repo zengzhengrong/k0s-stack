@@ -3,7 +3,7 @@ kind: Application
 metadata:
   finalizers:
   - resources-finalizer.argocd.argoproj.io
-  name: radondb-sample
+  name: radondb-mysql-sample
 spec:
   project: default
   source:
@@ -12,7 +12,7 @@ spec:
     targetRevision: preview
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: radondb
+    namespace: radondb-mysql
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
