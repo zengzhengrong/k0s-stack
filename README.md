@@ -58,7 +58,7 @@ Access UI [argocd](http://argocd.localhost/) by default  username ```admin``` pa
 14.  artifactory-jcr (docker-registry)
 15.  argod-image-updater
 16.  k8tz *
-17.  pulsar
+17.  pulsar-cli
 
 
 See more [manifest](https://github.com/zengzhengrong/k0s-stack/tree/zh-cn/manifests)
