@@ -7,7 +7,7 @@ source /etc/profile
 
 i=1 
 time=$(date "+%Y%m%d") 
-while [ $i -le 10 ] 
+while [ $i -le 30 ] 
 do 
 if [ -f "$1" ]; then 
    echo "$time" 

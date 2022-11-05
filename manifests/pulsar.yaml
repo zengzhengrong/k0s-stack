@@ -31,6 +31,12 @@ spec:
           value: 'false'
         - name: proxy.service.type
           value: 'ClusterIP'
+        - name: proxy.ingress.enabled
+          value: 'true'
+        - name: proxy.ingress.annotations.kubernetes\.io/ingress\.class
+          value: nginx
+        - name: proxy.ingress.hostname
+          value: 'pulsarproxy.localhost'
         - name: components.autorecovery
           value: 'true'
         - name: zookeeper.replicaCount

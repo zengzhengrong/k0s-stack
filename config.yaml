@@ -8,7 +8,17 @@ spec:
       repositories:
       - name: argo
         url: https://argoproj.github.io/argo-helm
+      - name: k8tz
+        url: https://k8tz.github.io/k8tz
       charts:
+      # - name: k8tz
+      #   chartname: k8tz/k8tz
+      #   namespace: default
+      #   version: "0.9.0"
+      #   values: |
+      #     timezone: Asia/Shanghai
+      #     injectionStrategy: initContainer
+      #     verbose: true
       - name: argocd
         chartname: argo/argo-cd
         namespace: default
@@ -79,6 +89,10 @@ spec:
                     value: '32080'
                   - name: controller.service.nodePorts.https
                     value: '32443'
+                  - name: controller.service.nodePorts.tcp.6550
+                    value: '30665'
+                  - name: tcp.6550
+                    value: 'pulsar/pulsar-proxy:6650'
                   - name: controller.service.nodePorts.tcp.3306
                     value: '30306'
                   - name: tcp.3306
@@ -183,6 +197,29 @@ spec:
               destination:
                 server: 'https://kubernetes.default.svc'
                 namespace: openebs
+              syncPolicy:
+                automated:
+                  prune: true
+                  selfHeal: true
+                syncOptions:
+                  - CreateNamespace=true
+            - name: k8tz
+              finalizers:
+              - resources-finalizer.argocd.argoproj.io
+              project: default
+              source:
+                repoURL: 'https://k8tz.github.io/k8tz'
+                targetRevision: 0.9.0
+                helm:
+                  parameters:
+                    - name: timezone
+                      value: Asia/Shanghai
+                    - name: verbose
+                      value: 'true'
+                chart: k8tz
+              destination:
+                server: 'https://kubernetes.default.svc'
+                namespace: k8tz
               syncPolicy:
                 automated:
                   prune: true

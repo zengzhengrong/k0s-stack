@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: k8tz
+spec:
+  project: default
+  source:
+    repoURL: 'https://k8tz.github.io/k8tz'
+    targetRevision: 0.9.0
+    helm:
+      parameters:
+        - name: timezone
+          value: Asia/Shanghai
+        - name: verbose
+          value: 'true'
+    chart: k8tz
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: k8tz
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
