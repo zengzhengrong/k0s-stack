@@ -4,7 +4,7 @@ cmd/argocd/argocd
 admin.conf
 data
 apps.yaml
-airgap/*file
+*_file
 containerd.toml
 token
 .DS_Store

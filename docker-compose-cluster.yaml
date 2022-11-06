@@ -2,7 +2,7 @@ version: "3.9"
 services:
   k0s-master:
     container_name: k0s
-    image: docker.io/k0sproject/k0s:latest
+    image: docker.io/k0sproject/k0s:v1.23.10-k0s.0
     entrypoint: ["sh","entrypoint.sh"]
     hostname: k0s
     privileged: true
@@ -13,7 +13,6 @@ services:
       - "/var/lib/k0s"
       - "./config.yaml:/etc/k0s/config.yaml"
       - "./admin.conf:/var/lib/k0s/pki/admin.conf"
-      - "./airgap/bundle_file:/var/lib/k0s/images/bundle_file"
       - "./airgap/localtime:/etc/localtime"
       - "./token:/var/token"
     tmpfs:
@@ -26,10 +25,11 @@ services:
       - "3306:30306"
       - "8080:8080"
       - "8000:8000"
+      - "6650:30665"
     network_mode: "bridge"
   k0s-worker1: &k0s-worker
     container_name: k0s-worker1
-    image: docker.io/k0sproject/k0s:latest
+    image: docker.io/k0sproject/k0s:v1.23.10-k0s.0
     entrypoint: ["sh","entrypoint-worker.sh","/var/token/k0s.token"]
     hostname: k0s-worker1
     privileged: true
@@ -39,7 +39,7 @@ services:
       - "./certs.d:/etc/containerd/certs.d"
       - "/var/lib/k0s"
       - "./data:/var/openebs"
-      - "./airgap/bundle_file:/var/lib/k0s/images/bundle_file"
+      # - "./airgap/bundle/bundle_file:/var/lib/k0s/images/bundle_file"
       - "./airgap/localtime:/etc/localtime"
       - "./token:/var/token"
     network_mode: "bridge"

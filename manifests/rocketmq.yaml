@@ -13,10 +13,6 @@ spec:
       parameters:
         - name: ingress.enabled
           value: 'true'
-        - name: 'broker.envs[1].name'
-          value: TZ
-        - name: 'broker.envs[1].value'
-          value: Asia/Shanghai
         - name: 'broker.envs[0].name'
           value: JAVA_OPT_EXT
         - name: 'broker.envs[0].value'
