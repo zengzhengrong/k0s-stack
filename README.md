@@ -37,6 +37,25 @@ GPU Device 0: "Pascal" with compute capability 6.1
 = 107.874 billion interactions per second
 = 2157.472 single-precision GFLOP/s at 20 flops per interaction
 ```
+#### Clean up
+
+Delete /var/token/k0s.token and clean admin.conf
+```
+cat /dev/null>admin.conf
+```
+
+#### Access by kubectl
+
+```
+export KUBECONFIG=$(PWD)/admin.conf
+
+kubectl get node -w
+NAME          STATUS     ROLES           AGE   VERSION
+k0s           NotReady   control-plane   60s   v1.23.10+k0s
+k0s-worker1   NotReady   worker          60s   v1.23.10+k0s
+k0s-worker2   NotReady   worker          60s   v1.23.10+k0s
+```
+
 
 # Konw Issue
 1.wsl
@@ -58,9 +77,16 @@ Access UI [argocd](http://argocd.localhost/) by default  username ```admin``` pa
 5. ingress-nginx *
 6. eck-operator
 7. eck-stack-noauth (require eck-operator)
-8. pulsar (does not work)
+8. pulsar 
 9. rocketmq
 10.  rocketmq-cli (require rocketmq, validate rocketmq work fine)
+11.  radondb-mysql-operator
+12.  radondb-mysql-sample
+13.  canal HA (deafult with rocketmq)
+14.  artifactory-jcr (docker-registry)
+15.  argod-image-updater
+16.  k8tz *
+17.  pulsar-cli
 
 
 See more [manifest](https://github.com/zengzhengrong/k0s-stack/tree/zh-cn/manifests)
@@ -72,7 +98,11 @@ See airgap directory
 
 # Issues
 
-### storage
+#### storage
 
 1.openebs issues in wsl https://github.com/openebs/openebs/issues/3487  
 2.Only use local path pv
+
+#### Private Registry
+
+https://github.com/containerd/containerd/blob/main/docs/cri/registry.md

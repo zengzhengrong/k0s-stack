@@ -1,0 +1,46 @@
+# curl -XPOST -vu admin:admin http://artifactory.localhost/artifactory/ui/jcr/eula/accept 
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: jfrog-container-registry
+spec:
+  destination:
+    namespace: artifactory-jcr
+    server: 'https://kubernetes.default.svc'
+  source:
+    repoURL: 'https://charts.jfrog.io'
+    targetRevision: 107.46.6
+    chart: artifactory-jcr
+    helm:
+      parameters:
+        - name: artifactory.ingress.enabled
+          value: 'true'
+        - name: artifactory.postgresql.enabled
+          value: 'false'
+        - name: postgresql.enabled
+          value: 'false'
+        - name: artifactory.ingress.className
+          value: nginx
+        - name: artifactory.ingress.annotations.nginx\.ingress\.kubernetes\.io/proxy-body-size
+          value: '0'
+          forceString: true
+        - name: artifactory.ingress.enabled
+          value: 'true'
+        - name: 'artifactory.ingress.hosts[0]'
+          value: artifactory.localhost
+        - name: artifactory.artifactory.admin.password
+          value: admin
+        - name: artifactory.artifactory.persistence.storageClassName
+          value: openebs-hostpath
+        - name: artifactory.observability.enabled
+          value: 'false'
+        - name: artifactory.nginx.service.type
+          value: ClusterIP
+        - name: artifactory.nginx.enabled
+          value: 'false'
+  project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

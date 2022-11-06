@@ -4,7 +4,7 @@ kind: Secret
 metadata:
   # Corresponding to the user's secretName
   name: sample-user-password
-  namespace: radondb
+  namespace: radondb-mysql
 data:
   # The key corresponding to the user's secretKey
   # RadonDB@123
@@ -15,7 +15,7 @@ apiVersion: mysql.radondb.com/v1alpha1
 kind: MysqlUser
 metadata:
   name: super-user
-  namespace: radondb
+  namespace: radondb-mysql
 spec:
   ## MySQL user name.
   user: super_user
@@ -33,7 +33,7 @@ spec:
   ## Specify the cluster where the user is located.
   userOwner:
     clusterName: sample
-    nameSpace: radondb
+    nameSpace: radondb-mysql
   ## Specify the secret object for user.
   secretSelector:
     secretName: sample-user-password
@@ -43,7 +43,7 @@ apiVersion: mysql.radondb.com/v1alpha1
 kind: MysqlUser
 metadata:
   name: normal-user
-  namespace: radondb
+  namespace: radondb-mysql
 spec:
   ## MySQL user name.
   user: normal_user
@@ -64,7 +64,7 @@ spec:
   ## Specify the cluster where the user is located.
   userOwner:
     clusterName: sample
-    nameSpace: radondb
+    nameSpace: radondb-mysql
   ## Specify the secret object for user.
   secretSelector:
     secretName: sample-user-password

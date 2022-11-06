@@ -1,0 +1,34 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pulsar-cli-consumer
+  namespace: pulsar
+  labels:
+    app: pulsar-cli-consumer
+spec:
+  selector:
+    matchLabels:
+      app: pulsar-cli-consumer
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pulsar-cli-consumer
+    spec:
+      containers:
+      - name: pulsar-cli-consumer
+        image: docker.io/zengzhengrong889/pulsar-cli:latest
+        imagePullPolicy: IfNotPresent
+        args:
+          - "consumer"
+          - "--url"
+          - "pulsar://pulsar-proxy.pulsar:6650"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+      restartPolicy: Always
