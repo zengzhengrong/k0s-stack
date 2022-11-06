@@ -41,6 +41,7 @@ services:
       - "/var/lib/k0s"
       - "./data:/var/openebs"
       # - "./airgap/bundle/bundle_file:/var/lib/k0s/images/bundle_file"
+      - "./containerd.toml:/etc/k0s/containerd.toml"
       - "./airgap/localtime:/etc/localtime"
       - "./token:/var/token"
     network_mode: "bridge"
