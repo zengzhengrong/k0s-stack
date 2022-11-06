@@ -7,7 +7,7 @@ source /etc/profile
 
 i=1 
 time=$(date "+%Y%m%d") 
-while [ $i -le 10 ] 
+while [ $i -le 30 ] 
 do 
 if [ -f "$1" ]; then 
    echo "$time" 
@@ -20,12 +20,14 @@ if [ $INIT ]; then
    k0s worker --token-file /var/token/k0s.token
 else
    echo "init to start"
-   mkdir -p /etc/k0s
-   echo '''
-   version = 2
-   [plugins."io.containerd.grpc.v1.cri".registry]
-      config_path = "/etc/containerd/certs.d"
-   ''' >> /etc/k0s/containerd.toml
+   if [ ! -e "/etc/k0s/containerd.toml" ]; then
+      mkdir -p /etc/k0s
+      echo '''
+      version = 2
+      [plugins."io.containerd.grpc.v1.cri".registry]
+         config_path = "/etc/containerd/certs.d"
+      ''' >> /etc/k0s/containerd.toml
+   fi
    export INIT=1
    echo "export INIT=1" >> /etc/profile
    k0s worker --token-file /var/token/k0s.token --labels="node.k0sproject.io/role=worker"
