@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: pulsar-cli
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/zengzhengrong/k0s-stack'
+    path: docs/mongodb/mongo-express/
+    targetRevision: preview
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: mongodb
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

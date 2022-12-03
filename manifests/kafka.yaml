@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: kafka
+spec:
+  project: default
+  source:
+    repoURL: 'https://ricardo-aires.github.io/helm-charts/'
+    targetRevision: 0.1.1
+    helm:
+      parameters:
+      - name: kafka.enabled
+        value: 'true'
+      - name: ksqldb.enabled
+        value: 'false'
+      - name: kafka-connect.enabled
+        value: 'false'
+      - name: schema-registry.enabled
+        value: 'false'
+      - name: kafdrop.enabled
+        value: 'false'
+      - name: kafka.replicaCount
+        value: '1'
+      - name: kafka.autoCreateTopicsEnable
+        value: 'true'
+      - name: kafka.defaultReplicationFactor
+        value: '1'
+      - name: kafka.heapOpts
+        value: '-Xmx2048m -Xms2048m'
+      - name: kafka.data.storageClass
+        value: openebs-hostpath
+      - name: kafka.data.storageSize
+        value: 10Gi
+      - name: kafka.zookeeper.enabled
+        value: 'false'
+      - name: kafka.zookeeper.url
+        value: 'zookeeper.zookeeper:2181'
+      - name: kafka.externalAccess.enabled
+        value: 'true'
+    chart: kstack
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: kafka-stack
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+

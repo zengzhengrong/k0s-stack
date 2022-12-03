@@ -11,14 +11,6 @@ spec:
       - name: k8tz
         url: https://k8tz.github.io/k8tz
       charts:
-      # - name: k8tz
-      #   chartname: k8tz/k8tz
-      #   namespace: default
-      #   version: "0.9.0"
-      #   values: |
-      #     timezone: Asia/Shanghai
-      #     injectionStrategy: initContainer
-      #     verbose: true
       - name: argocd
         chartname: argo/argo-cd
         namespace: default
@@ -26,7 +18,7 @@ spec:
         values: |
           controller:
             args:
-              appResyncPeriod: "10"
+              appResyncPeriod: "90"
           server:
             extraArgs:
               - --insecure
@@ -40,7 +32,7 @@ spec:
                 - argocd.localhost
               ingressClassName: nginx
             config:
-              timeout.reconciliation: 10s
+              timeout.reconciliation: 30s
               exec.enabled: "true"
               users.anonymous.enabled: "false"
               accounts.zzr: apiKey, login
@@ -55,7 +47,7 @@ spec:
         chartname: argo/argocd-apps
         namespace: default
         values: |
-          projects: 
+          projects:
             - name: default
               clusterResourceWhitelist:
               - group: '*'
@@ -97,6 +89,10 @@ spec:
                     value: '30306'
                   - name: tcp.3306
                     value: 'radondb-mysql/sample-leader:3306'
+                  - name: controller.service.nodePorts.tcp.6379
+                    value: '30379'
+                  - name: tcp.6379
+                    value: 'redis/redis-standalone-external-service:6379'
                 repoURL: https://kubernetes.github.io/ingress-nginx
                 targetRevision: 4.2.3
               syncPolicy:

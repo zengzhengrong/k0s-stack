@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  name: etcd
+spec:
+  project: default
+  source:
+    repoURL: 'https://charts.bitnami.com/bitnami'
+    targetRevision: 8.5.10
+    helm:
+      parameters:
+        - name: persistence.storageClass
+          value: openebs-hostpath
+        - name: auth.rbac.create
+          value: 'false'
+        - name: auth.rbac.allowNoneAuthentication
+          value: 'true'
+        - name: readinessProbe.enabled
+          value: 'false'
+    chart: etcd
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: etcd
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  info:
+    - name: link
+      value: 'https://github.com/bitnami/charts/tree/main/bitnami/etcd'
+    - name: issues auth
+      value: 'https://github.com/bitnami/charts/issues/2433'

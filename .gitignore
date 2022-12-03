@@ -8,3 +8,5 @@ apps.yaml
 containerd.toml
 token
 .DS_Store
+docker-compose-cluster.yaml
+docker-compose.yaml

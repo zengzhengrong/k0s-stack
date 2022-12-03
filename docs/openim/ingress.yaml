@@ -1,0 +1,67 @@
+# https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api
+  namespace: openim
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: openim.localhost
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: openim
+            port:
+              number: 10002
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+  name: sdk-server
+  namespace: openim
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: sdk-server.openim.localhost
+    http:
+      paths:
+      - backend:
+          service:
+            name: openim
+            port:
+              number: 10003
+        path: /
+        pathType: Prefix
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+  name: msg-gateway
+  namespace: openim
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: msg-gateway.openim.localhost
+    http:
+      paths:
+      - backend:
+          service:
+            name: openim
+            port:
+              number: 10001
+        path: /
+        pathType: Prefix

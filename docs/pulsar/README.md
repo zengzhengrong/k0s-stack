@@ -18,3 +18,15 @@ Service URL
 ```
 http://pulsar-proxy
 ```
+
+
+### Proxy as root
+
+[Pulsar proxy fails to start with pulsar Docker image that uses non-root user](https://github.com/apache/pulsar-helm-chart/issues/110)
+
+Paste to proxy
+```
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 0
+```
