@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: confluent-platform
+spec:
+  project: default
+  source:
+    repoURL: 'https://confluentinc.github.io/cp-helm-charts/'
+    targetRevision: 0.6.1
+    helm:
+      parameters:
+        - name: cp-schema-registry.enabled
+          value: 'false'
+        - name: cp-kafka-rest.enabled
+          value: 'false'
+        - name: cp-kafka-connect.enabled
+          value: 'false'
+        - name: cp-ksql-server.enabled
+          value: 'false'
+        - name: cp-zookeeper.persistence.dataDirSize
+          value: 5Gi
+          forceString: true
+        - name: cp-zookeeper.persistence.dataLogDirSize
+          value: 5Gi
+          forceString: true
+        - name: cp-zookeeper.persistence.dataDirStorageClass
+          value: openebs-hostpath
+        - name: cp-zookeeper.persistence.dataLogDirStorageClass
+          value: openebs-hostpath
+        - name: cp-kafka.persistence.storageClass
+          value: openebs-hostpath
+        - name: cp-zookeeper.servers
+          value: '1'
+        - name: cp-kafka.brokers
+          value: '1'
+        - name: cp-control-center.configurationOverrides.replication\.factor
+          value: '1'
+          forceString: true
+        - name: cp-kafka.configurationOverrides.offsets\.topic\.replication\.factor
+          value: '1'
+          forceString: true
+        - name: cp-kafka.configurationOverrides.auto\.create\.topics\.enable
+          value: 'true'
+          forceString: true
+    chart: cp-helm-charts
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: confluent-platform
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

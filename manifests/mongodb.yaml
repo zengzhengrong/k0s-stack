@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: mongodb
+spec:
+  project: default
+  source:
+    repoURL: 'https://zengzhengrong.github.io/helm-charts'
+    targetRevision: 4.4.17
+    helm:
+      parameters:
+        - name: persistence.storageClassName
+          value: openebs-hostpath
+        - name: mongoExpress.enabled
+          value: 'true'
+        - name: mongoExpress.ingress.enabled
+          value: 'true'
+    chart: mongodb
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: mongodb
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  info:
+    - name: link
+      value: https://github.com/hypertrace/mongodb
+

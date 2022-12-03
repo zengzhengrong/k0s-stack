@@ -1,0 +1,74 @@
+# https://github.com/mongo-express/mongo-express
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  mongo-express
+  namespace: mongodb
+  labels:
+    app:  mongo-express
+spec:
+  selector:
+    matchLabels:
+      app: mongo-express
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app:  mongo-express
+    spec:
+      containers:
+      - name:  mongo-express
+        image:  mongo-express:latest
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: ME_CONFIG_MONGODB_URL
+          value: "mongodb://mongodb:27017"
+        - name: ME_CONFIG_BASICAUTH_USERNAME
+          value: ""
+        - name: ME_CONFIG_OPTIONS_EDITORTHEME
+          value: "ambiance"
+        ports:
+        - containerPort:  8081
+          name:  http
+      restartPolicy: Always
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name:  mongo-express
+  namespace: mongodb
+spec:
+  selector:
+    app:  mongo-express
+  type:  ClusterIP
+  ports:
+  - name:  http
+    port:  80
+    targetPort:  8081
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mongo-express
+  namespace: mongodb
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: mongo-express.localhost
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: mongo-express
+            port:
+              number: 80
