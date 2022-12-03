@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mongodb-community-sample-app
+spec:
+  project: default
+  source:
+    repoURL: 'https://mongodb.github.io/helm-charts'
+    targetRevision: 0.1.0
+    helm:
+      parameters:
+        - name: mongodb.connectionStringSecret
+          value: example-mongodb-admin-zzr
+    chart: sample-app
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: mongodb
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

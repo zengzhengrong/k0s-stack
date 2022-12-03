@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: redis-standalone
+spec:
+  project: default
+  source:
+    repoURL: 'https://ot-container-kit.github.io/helm-charts/'
+    targetRevision: 0.12.0
+    helm:
+      parameters:
+        - name: externalConfig.enabled
+          value: 'true'
+        - name: externalConfig.data
+          value: |
+            tcp-keepalive 60 
+            loglevel debug 
+            stop-writes-on-bgsave-error no
+        - name: externalService.enabled
+          value: 'true'
+        - name: externalService.serviceType
+          value: 'ClusterIP'
+        - name: storageSpec.volumeClaimTemplate.spec.storageClassName
+          value: openebs-hostpath
+    chart: redis
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: redis
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

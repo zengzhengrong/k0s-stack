@@ -2,7 +2,7 @@ version: "3.9"
 services:
   k0s:
     container_name: k0s
-    image: docker.io/k0sproject/k0s:v1.23.10-k0s.0
+    image: docker.io/k0sproject/k0s:v1.25.4-k0s.0
     command: k0s controller --config=/etc/k0s/config.yaml --single
     hostname: k0s
     privileged: true
@@ -22,7 +22,6 @@ services:
       - "80:32080"
       - "443:32443"
       - "3306:30306"
-      - "8080:8080"
-      - "8000:8000"
       - "6650:30665"
+      - "6379:30379"
     network_mode: "bridge"

@@ -59,6 +59,13 @@ Access UI [argocd](http://argocd.localhost/) by default  username ```admin``` pa
 15.  argod-image-updater
 16.  k8tz *
 17.  pulsar-cli
+18.  mongodb
+19.  mongodb-community (require mongodb-community-operator)
+20.  kafka 
+21.  kafdrop (kafka ui)
+22.  redis-standalone (require redis-operator)
+23.  etcd
+24.  mongo-express (mongodb ui)
 
 
 See more [manifest](https://github.com/zengzhengrong/k0s-stack/tree/zh-cn/manifests)
@@ -78,3 +85,15 @@ See airgap directory
 #### Private Registry
 
 https://github.com/containerd/containerd/blob/main/docs/cri/registry.md
+
+
+#### helm install argo-apps error
+Log
+```
+rendered manifests contain a resource that already exists. Unable to continue with install: AppProject default
+```
+
+Try to delete resource and restart
+```
+k0s kc delete AppProject default
+```
