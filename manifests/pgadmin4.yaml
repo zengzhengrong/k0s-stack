@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pgadmin4
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: postgresql
+    server: 'https://kubernetes.default.svc'
+  source:
+    repoURL: 'https://helm.runix.net'
+    targetRevision: 1.13.8
+    chart: pgadmin4
+    helm:
+      parameters:
+        - name: ingress.enabled
+          value: 'true'
+        - name: env.password
+          value: admin
+        - name: env.email
+          value: bhg889@163.com
+        - name: persistentVolume.storageClass
+          value: openebs-hostpath
+        - name: 'ingress.hosts[0].host'
+          value: pgadmin4.localhost
+        - name: 'ingress.hosts[0].paths[0].path'
+          value: /
+        - name: 'ingress.hosts[0].paths[0].pathType'
+          value: Prefix
+        - name: ingress.ingressClassName
+          value: nginx
+  project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  info:
+    - name: link
+      value: https://github.com/rowanruseler/helm-charts/tree/master/charts/pgadmin4
+    - name: login user password
+      value: bhg889@163.com admin
