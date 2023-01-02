@@ -40,6 +40,17 @@ spec:
               passwordPattern: "^.{5,32}$"
             rbacConfig:
               policy.default: role:readonly
+            extensions:
+              enabled: true
+              image:
+                tag: "v0.2.1"
+              resources:
+                limits:
+                  cpu: 50m
+                  memory: 128Mi
+                requests:
+                  cpu: 10m
+                  memory: 64Mi
           configs:
             secret:
               argocdServerAdminPassword: $2a$10$geIjyqBxjeqyYesrQPe1deq9CyO04DKpIqT/BqJHvYl.Y0/LDf.p2
