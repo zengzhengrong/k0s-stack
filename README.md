@@ -66,6 +66,9 @@ Access UI [argocd](http://argocd.localhost/) by default  username ```admin``` pa
 22.  redis-standalone (require redis-operator)
 23.  etcd
 24.  mongo-express (mongodb ui)
+25.  postgresql
+26.  pgadmin4
+27.  canal-helm
 
 
 See more [manifest](https://github.com/zengzhengrong/k0s-stack/tree/zh-cn/manifests)
