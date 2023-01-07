@@ -71,7 +71,7 @@ Access UI [argocd](http://argocd.localhost/) by default  username ```admin``` pa
 27.  canal-helm
 
 
-See more [manifest](https://github.com/zengzhengrong/k0s-stack/tree/zh-cn/manifests)
+See more [manifest](https://github.com/zengzhengrong/k0s-stack/tree/master/manifests)
 
 Flag ```*``` is already installed by default
 # Airgap
