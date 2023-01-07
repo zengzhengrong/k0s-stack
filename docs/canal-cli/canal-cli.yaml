@@ -1,0 +1,40 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: canal-cli
+  namespace: canal
+  labels:
+    app: canal-cli
+    argocd.argoproj.io/instance: canal
+spec:
+  selector:
+    matchLabels:
+      app: canal-cli
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: canal-cli
+    spec:
+      containers:
+      - name: canal-cli
+        image: docker.io/zengzhengrong889/canal-cli:latest
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: CANAL_LISTEN_REG
+            value: "radondb.test_canal"
+          - name: CANAL_HOST
+            value: "canal-server-0.canal-server-headless.canal"
+          - name: CANAL_HOST_PORT
+            value: "11111"
+          - name: CANAL_DESTINATION
+            value: "radondb"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+      restartPolicy: Always

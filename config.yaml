@@ -14,7 +14,7 @@ spec:
       - name: argocd
         chartname: argo/argo-cd
         namespace: default
-        version: "5.6.0"
+        version: "5.16.6"
         values: |
           controller:
             args:
@@ -40,12 +40,24 @@ spec:
               passwordPattern: "^.{5,32}$"
             rbacConfig:
               policy.default: role:readonly
+            extensions:
+              enabled: true
+              image:
+                tag: "v0.2.1"
+              resources:
+                limits:
+                  cpu: 50m
+                  memory: 128Mi
+                requests:
+                  cpu: 10m
+                  memory: 64Mi
           configs:
             secret:
               argocdServerAdminPassword: $2a$10$geIjyqBxjeqyYesrQPe1deq9CyO04DKpIqT/BqJHvYl.Y0/LDf.p2
       - name: argo-apps
         chartname: argo/argocd-apps
         namespace: default
+        version: "0.0.5"
         values: |
           projects:
             - name: default
@@ -94,7 +106,7 @@ spec:
                   - name: tcp.6379
                     value: 'redis/redis-standalone-external-service:6379'
                 repoURL: https://kubernetes.github.io/ingress-nginx
-                targetRevision: 4.2.3
+                targetRevision: 4.4.0
               syncPolicy:
                 automated:
                   prune: true
@@ -123,7 +135,7 @@ spec:
                   - name: server.ingress.hosts[0]
                     value: argostack.localhost
                 repoURL: https://argoproj.github.io/argo-helm
-                targetRevision: 0.17.1
+                targetRevision: 0.22.1
               syncPolicy:
                 automated:
                   prune: true
@@ -138,7 +150,7 @@ spec:
               source:
                 chart: argo-events
                 repoURL: https://argoproj.github.io/argo-helm
-                targetRevision: 2.0.4
+                targetRevision: 2.0.9
               syncPolicy: 
                 automated:
                   prune: true
@@ -165,7 +177,7 @@ spec:
                   - name: dashboard.enabled
                     value: "true"
                 repoURL: https://argoproj.github.io/argo-helm
-                targetRevision: 2.20.0
+                targetRevision: 2.21.1
               syncPolicy: 
                 automated:
                   prune: true
