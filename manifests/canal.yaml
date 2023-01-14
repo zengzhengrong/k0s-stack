@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: 'https://github.com/zengzhengrong/k0s-stack'
     path: docs/canal/
-    targetRevision: preview
+    targetRevision: zh-cn
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: canal
