@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: 'https://radondb.github.io/radondb-mysql-kubernetes/'
-    targetRevision: 2.2.1
+    targetRevision: 2.3.0
     chart: mysql-operator
   destination:
     server: 'https://kubernetes.default.svc'

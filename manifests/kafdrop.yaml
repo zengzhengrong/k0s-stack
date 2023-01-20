@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: kafka-ui
+spec:
+  project: default
+  source:
+    repoURL: 'https://ricardo-aires.github.io/helm-charts/'
+    targetRevision: 0.1.0
+    helm:
+      parameters:
+        - name: kafka.enabled
+          value: 'false'
+        - name: kafka.bootstrapServers
+          value: 'kafka-stack-headless.kafka-stack:9092'
+        - name: schema-registry.enabled
+          value: 'false'
+    chart: kafdrop
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: kafka-stack
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+
+

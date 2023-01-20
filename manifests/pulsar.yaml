@@ -8,13 +8,19 @@ spec:
   project: default
   source:
     repoURL: 'https://pulsar.apache.org/charts'
-    targetRevision: 2.9.4
+    targetRevision: 3.0.0
     helm:
       parameters:
         - name: images.pulsar_manager.tag
           value: 'v0.2.0'
         - name: volumes.persistence
-          value: 'false'
+          value: 'true'
+        - name: zookeeper.volumes.datastorageClassName
+          value: 'openebs-hostpath'
+        - name: bookkeeper.volumes.useSingleCommonVolume
+          value: 'true'
+        - name: bookkeeper.volumes.common.storageClassName
+          value: 'openebs-hostpath'
         - name: broker.affinity.anti_affinity
           value: 'false'
         - name: components.pulsar_manager
@@ -69,6 +75,16 @@ spec:
           value: 'false'
         - name: kube-prometheus-stack.enabled
           value: 'false'
+        - name: zookeeper.podMonitor.enabled
+          value: 'false'
+        - name: bookkeeper.podMonitor.enabled
+          value: 'false'
+        - name: autorecovery.podMonitor.enabled
+          value: 'false'
+        - name: broker.podMonitor.enabled
+          value: 'false'
+        - name: proxy.podMonitor.enabled
+          value: 'false'        
     chart: pulsar
   destination:
     server: 'https://kubernetes.default.svc'

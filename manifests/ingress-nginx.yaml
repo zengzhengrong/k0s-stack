@@ -38,12 +38,16 @@ spec:
         value: '32443'
       - name: controller.service.nodePorts.tcp.6550
         value: '30665'
-      - name: tcp.6550
-        value: 'pulsar/pulsar-proxy:6650'
+      - name: controller.service.nodePorts.tcp.6379
+        value: '30379'
       - name: controller.service.nodePorts.tcp.3306
         value: '30306'
+      - name: tcp.6550
+        value: 'pulsar/pulsar-proxy:6650'
       - name: tcp.3306
         value: 'radondb-mysql/sample-leader:3306'
+      - name: tcp.6379
+        value: 'redis/redis-standalone-external-service:6379'
     repoURL: https://kubernetes.github.io/ingress-nginx
     targetRevision: 4.2.3
   syncPolicy:
