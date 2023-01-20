@@ -26,5 +26,3 @@ services:
       - "6650:30665"
       - "6379:30379"
     network_mode: "bridge"
-    environment:
-      - HTTP_PROXY=http://192.168.2.102:7890
