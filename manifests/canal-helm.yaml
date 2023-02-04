@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: 'https://zengzhengrong.github.io/helm-charts'
-    targetRevision: 0.1.0
+    targetRevision: 1.0.1
     chart: canal
     helm:
       parameters:
