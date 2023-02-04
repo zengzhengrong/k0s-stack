@@ -8,3 +8,4 @@ apps.yaml
 containerd.toml
 token
 .DS_Store
+README.md
