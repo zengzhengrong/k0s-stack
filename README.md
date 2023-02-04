@@ -51,19 +51,19 @@ windows ```~\.docker\daemon.json```
 
 restart docker
 
-2. Test GPU in wsl
+2.Test GPU in wsl
 
 ```
 docker run --rm -it --gpus=all nvcr.io/nvidia/k8s/cuda-sample:nbody nbody -gpu -benchmark
 ```
 
-3. Start k0s
+3.Start k0s
 ```
 docker-compose up -d
 ```
 Copy admin.cnof to your path of kubeconfig file
 
-4. Test GPU in k0s container
+4.Test GPU in k0s container
 
 ```
 mv /var/lib/k0s/bin/containerd usr/local/bin/
