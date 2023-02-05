@@ -1,7 +1,13 @@
+<<<<<<< HEAD
 # k0s-stack
 k0s argo stack is pretty simple setup kubernetes by use docker compose
 
 # Usage
+
+##### Note:  nvidia driver version has new in cuda 12.0.0, below example is only available with GTX 1060 and 516.94 with cuda 11.7
+
+
+
 1.Enable wsl on ubuntu and install cuda
 
 
@@ -67,7 +73,8 @@ Copy admin.cnof to your path of kubeconfig file
 
 ```
 mv /var/lib/k0s/bin/containerd usr/local/bin/
-k0s ctr run --gpus 0 --rm   nvcr.io/nvidia/k8s/cuda-sample:nbody test-gpu /tmp/nbody -gpu -benchmark
+k0s ctr image pull nvcr.io/nvidia/k8s/cuda-sample:nbody
+k0s ctr run --gpus 0 --rm   nvcr.io/nvidia/k8s/cuda-sample:nbody test-gpu  cuda-samples/nbody -gpu -benchmark
 Run "nbody -benchmark [-numbodies=<numBodies>]" to measure performance.
         -fullscreen       (run n-body simulation in fullscreen mode)
         -fp64             (use double precision floating point values for simulation)
@@ -93,25 +100,6 @@ GPU Device 0: "Pascal" with compute capability 6.1
 = 107.874 billion interactions per second
 = 2157.472 single-precision GFLOP/s at 20 flops per interaction
 ```
-#### Clean up
-
-Delete /var/token/k0s.token and clean admin.conf
-```
-cat /dev/null>admin.conf
-```
-
-#### Access by kubectl
-
-```
-export KUBECONFIG=$(PWD)/admin.conf
-
-kubectl get node -w
-NAME          STATUS     ROLES           AGE   VERSION
-k0s           NotReady   control-plane   60s   v1.23.10+k0s
-k0s-worker1   NotReady   worker          60s   v1.23.10+k0s
-k0s-worker2   NotReady   worker          60s   v1.23.10+k0s
-```
-
 
 # Konw Issue
 1.wsl
@@ -119,46 +107,13 @@ https://docs.nvidia.com/cuda/wsl-user-guide/index.html#setting-up-linux-dev-env
 2.Install k8s-device-plugin
 https://github.com/NVIDIA/k8s-device-plugin/issues/332
 
-# Argocd 
+# Compare
 
 
-Access UI [argocd](http://argocd.localhost/) by default  username ```admin``` password ```admin```
+https://github.com/tensorflow/docs/blob/master/site/en/tutorials/images/classification.ipynb
 
-# Argocd Applications
+4X faster than cpu
 
-1. argo-event *
-2. argo-rollouts *
-3. argo-workflows *
-4. openebs (local-path only) *
-5. ingress-nginx *
-6. eck-operator
-7. eck-stack-noauth (require eck-operator)
-8. pulsar 
-9. rocketmq
-10.  rocketmq-cli (require rocketmq, validate rocketmq work fine)
-11.  radondb-mysql-operator
-12.  radondb-mysql-sample
-13.  canal HA (deafult with rocketmq)
-14.  artifactory-jcr (docker-registry)
-15.  argod-image-updater
-16.  k8tz *
-17.  pulsar-cli
+![cpu](https://github.com/zengzhengrong/k0s-stack/blob/nvidia-container-runtime/image/cpu.png)
 
-
-See more [manifest](https://github.com/zengzhengrong/k0s-stack/tree/zh-cn/manifests)
-
-Flag ```*``` is already installed by default
-# Airgap
-
-See airgap directory
-
-# Issues
-
-#### storage
-
-1.openebs issues in wsl https://github.com/openebs/openebs/issues/3487  
-2.Only use local path pv
-
-#### Private Registry
-
-https://github.com/containerd/containerd/blob/main/docs/cri/registry.md
+![gpu](https://github.com/zengzhengrong/k0s-stack/blob/nvidia-container-runtime/image/gpu.png)

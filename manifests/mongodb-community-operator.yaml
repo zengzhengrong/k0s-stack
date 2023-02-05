@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mongodb-community-operator
+spec:
+  project: default
+  source:
+    repoURL: 'https://mongodb.github.io/helm-charts'
+    targetRevision: 0.7.6
+    chart: community-operator
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: mongodb
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+
+

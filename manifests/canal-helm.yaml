@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: canal
+spec:
+  project: default
+  source:
+    repoURL: 'https://zengzhengrong.github.io/helm-charts'
+    targetRevision: 0.1.0
+    chart: canal
+    helm:
+      parameters:
+        - name: canalAdmin.ingress.enabled
+          value: 'true'
+        - name: canalServerClusterMode.enabled
+          value: 'true'
+        - name: canalServerClusterMode.mode
+          value: rocketMQ
+        - name: zookeeper.enabled
+          value: 'false'
+        - name: defaultSampleCanalInstance.enabled
+          value: 'true'
+        - name: zookeeper.extralUrl
+          value: zookeeper.zookeeper
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: canal
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

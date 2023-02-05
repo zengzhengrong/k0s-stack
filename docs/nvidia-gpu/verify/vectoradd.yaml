@@ -9,6 +9,6 @@ spec:
     image: "nvidia/samples:vectoradd-cuda11.2.1"
     resources:
       limits:
-        nvidia.com/gpu: 0
-        cpu: 1
+        nvidia.com/gpu: "0"
+        cpu: "1"
         memory: 100Mi

@@ -10,6 +10,7 @@ services:
     volumes:
       - "./certs.d:/etc/containerd/certs.d"
       - "/var/lib/k0s"
+      - "./containerd.toml:/etc/k0s/containerd.toml"
       - "./config.yaml:/etc/k0s/config.yaml"
       - "./admin.conf:/var/lib/k0s/pki/admin.conf"
       - "./data:/var/openebs"
@@ -23,9 +24,8 @@ services:
       - "80:32080"
       - "443:32443"
       - "3306:30306"
-      - "8080:8080"
-      - "8000:8000"
       - "6650:30665"
+      - "6379:30379"
     network_mode: "bridge"
     environment:
       - "NVIDIA_VISIBLE_DEVICES=all"

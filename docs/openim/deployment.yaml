@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  openim
+  namespace: openim
+  labels:
+    app:  openim
+spec:
+  selector:
+    matchLabels:
+      app: openim
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app:  openim
+    spec:
+      containers:
+      - name:  openim
+        image:  openim/open_im_server:v2.3.5
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+        ports:
+        - containerPort: 10001
+          name: openim-ws
+        - containerPort: 10002
+          name: openim-api
+        - containerPort: 10003
+          name: openim-jssdk-ws
+        - containerPort: 10004
+          name: openim-demo
+        - containerPort: 10005
+          name: openim-minio
+        - containerPort: 10006
+          name: openim-admin
+        volumeMounts:
+          - name: openim-config
+            mountPath: /Open-IM-Server/config/config.yaml
+            subPath: config.yaml
+          - name: openim-usual-config
+            mountPath: /Open-IM-Server/config/usualConfig.yaml
+            subPath: usualConfig.yaml
+          - name: logs
+            mountPath: /Open-IM-Server/logs
+      volumes:
+        - name: openim-config
+          configMap:
+            name: openim-config
+        - name: openim-usual-config
+          configMap:
+            name: openim-usual-config
+        - name: logs
+          persistentVolumeClaim:
+            claimName: openim-logs
+      restartPolicy: Always

@@ -1,0 +1,28 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: openim
+  namespace: openim
+spec:
+  selector:
+    app: openim
+  type: ClusterIP
+  ports:
+  - name: openim-ws
+    port: 10001
+    targetPort: 10001
+  - name: openim-api
+    port: 10002
+    targetPort: 10002
+  - name: openim-jssdk-ws
+    port: 10003
+    targetPort: 10003
+  - name: openim-demo
+    port: 10004
+    targetPort: 10004
+  - name: openim-minio
+    port: 10005
+    targetPort: 10005
+  - name: openim-admin
+    port: 10006
+    targetPort: 10006

@@ -25,6 +25,7 @@ spec:
       containers:
       - name: canal-server
         image: zengzhengrong889/canal_server:v1.16_hotfix
+        imagePullPolicy: IfNotPresent
         resources:
           requests:
             cpu: 100m

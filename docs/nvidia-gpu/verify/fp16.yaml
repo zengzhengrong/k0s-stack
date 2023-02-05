@@ -10,8 +10,8 @@ spec:
      args: ["--no-dcgm-validation", "-t 1004", "-d 30"]
      resources:
        limits:
-        nvidia.com/gpu: 0
-        cpu: 1
+        nvidia.com/gpu: "0"
+        cpu: "1"
         memory: 100Mi
      securityContext:
        privileged: true

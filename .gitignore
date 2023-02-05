@@ -5,7 +5,8 @@ admin.conf
 data
 apps.yaml
 *_file
-containerd.toml
 token
 .DS_Store
 README.md
+docker-compose-cluster.yaml
+docker-compose.yaml

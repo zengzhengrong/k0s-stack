@@ -6,6 +6,12 @@ https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/getting-started.htm
 
 # Notbook
 
+token 
+
+```
+kubectl.exe logs tf-notebook
+```
+
 run ```text_classification_with_hub.ipynb```
 
 
