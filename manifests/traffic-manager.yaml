@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: traffic-manager
+spec:
+  project: default
+  source:
+    repoURL: 'https://app.getambassador.io'
+    targetRevision: 2.10.6
+    helm:
+      valueFiles:
+        - values.yaml
+    chart: telepresence
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: ambassador
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  info:
+    - name: link
+      value: https://github.com/telepresenceio/telepresence/tree/release/v2/charts/telepresence
+
+

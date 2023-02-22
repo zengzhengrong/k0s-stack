@@ -42,8 +42,8 @@ Access UI [argocd](http://argocd.localhost/) by default  username ```admin``` pa
 
 # Argocd Applications
 
-1. argo-event *
-2. argo-rollouts *
+1. argo-event 
+2. argo-rollouts 
 3. argo-workflows *
 4. openebs (local-path only) *
 5. ingress-nginx *
@@ -69,7 +69,8 @@ Access UI [argocd](http://argocd.localhost/) by default  username ```admin``` pa
 25.  postgresql
 26.  pgadmin4
 27.  canal-helm
-
+28.  sealed-secrets
+29.  telepresence *
 
 See more [manifest](https://github.com/zengzhengrong/k0s-stack/tree/zh-cn/manifests)
 

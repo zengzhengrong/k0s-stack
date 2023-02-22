@@ -1,10 +1,10 @@
 cmd/argo-workflows/argo
 cmd/argo-rollouts/kubectl-argo-rollouts
 cmd/argocd/argocd
-admin.conf
 data
 apps.yaml
 *_file
 containerd.toml
 token
 .DS_Store
+pki

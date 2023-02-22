@@ -10,7 +10,7 @@ services:
       - "./certs.d:/etc/containerd/certs.d"
       - "/var/lib/k0s"
       - "./config.yaml:/etc/k0s/config.yaml"
-      - "./admin.conf:/var/lib/k0s/pki/admin.conf"
+      - "./pki:/var/lib/k0s/pki"
       - "./data:/var/openebs"
       - "./airgap/bundle/bundle_file:/var/lib/k0s/images/bundle_file"
       - "./airgap/localtime:/etc/localtime"

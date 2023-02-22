@@ -3,6 +3,9 @@ kind: ClusterConfig
 metadata:
   name: k0s
 spec:
+  network:
+    kubeProxy:
+      metricsBindAddress: 0.0.0.0:10249
   extensions:
     helm:
       repositories:
@@ -105,6 +108,10 @@ spec:
                     value: '30379'
                   - name: tcp.6379
                     value: 'redis/redis-standalone-external-service:6379'
+                  - name: controller.metrics.serviceMonitor.enabled
+                    value: 'true'
+                  - name: controller.metrics.serviceMonitor.additionalLabels.release
+                    value: kube-prometheus-stack
                 repoURL: https://kubernetes.github.io/ingress-nginx
                 targetRevision: 4.4.0
               syncPolicy:
@@ -137,48 +144,6 @@ spec:
                 repoURL: https://argoproj.github.io/argo-helm
                 targetRevision: 0.22.1
               syncPolicy:
-                automated:
-                  prune: true
-                  selfHeal: true
-                syncOptions:
-                - CreateNamespace=true
-            - name: argo-events
-              destination:
-                namespace: argo
-                server: https://kubernetes.default.svc
-              project: default
-              source:
-                chart: argo-events
-                repoURL: https://argoproj.github.io/argo-helm
-                targetRevision: 2.0.9
-              syncPolicy: 
-                automated:
-                  prune: true
-                  selfHeal: true
-                syncOptions:
-                - CreateNamespace=true
-            - name: argo-rollouts
-              finalizers:
-              - resources-finalizer.argocd.argoproj.io
-              destination:
-                namespace: argo
-                server: https://kubernetes.default.svc
-              project: default
-              source:
-                chart: argo-rollouts
-                helm:
-                  parameters:
-                  - name: dashboard.ingress.enabled
-                    value: "true"
-                  - name: dashboard.ingress.ingressClassName
-                    value: nginx
-                  - name: dashboard.ingress.hosts[0]
-                    value: argorollouts.localhost
-                  - name: dashboard.enabled
-                    value: "true"
-                repoURL: https://argoproj.github.io/argo-helm
-                targetRevision: 2.21.1
-              syncPolicy: 
                 automated:
                   prune: true
                   selfHeal: true
@@ -228,6 +193,26 @@ spec:
               destination:
                 server: 'https://kubernetes.default.svc'
                 namespace: k8tz
+              syncPolicy:
+                automated:
+                  prune: true
+                  selfHeal: true
+                syncOptions:
+                  - CreateNamespace=true
+            - name: traffic-manager
+              finalizers:
+              - resources-finalizer.argocd.argoproj.io
+              project: default
+              source:
+                repoURL: 'https://app.getambassador.io'
+                targetRevision: 2.10.6
+                helm:
+                  valueFiles:
+                    - values.yaml'
+                chart: telepresence
+              destination:
+                server: 'https://kubernetes.default.svc'
+                namespace: ambassador
               syncPolicy:
                 automated:
                   prune: true
