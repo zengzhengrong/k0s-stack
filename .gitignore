@@ -8,3 +8,4 @@ containerd.toml
 token
 .DS_Store
 pki
+.monokle

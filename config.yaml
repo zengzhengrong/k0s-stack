@@ -3,9 +3,6 @@ kind: ClusterConfig
 metadata:
   name: k0s
 spec:
-  network:
-    kubeProxy:
-      metricsBindAddress: 0.0.0.0:10249
   extensions:
     helm:
       repositories:
@@ -108,6 +105,14 @@ spec:
                     value: '30379'
                   - name: tcp.6379
                     value: 'redis/redis-standalone-external-service:6379'
+                  - name: controller.service.nodePorts.tcp.9000
+                    value: '30900'
+                  - name: tcp.9000
+                    value: 'clickhouse/clickhouse-minimal:9000'
+                  - name: controller.service.nodePorts.tcp.8123
+                    value: '30812'
+                  - name: tpc.8123
+                    value: 'clickhouse/clickhouse-minimal:8123'
                   - name: controller.metrics.serviceMonitor.enabled
                     value: 'true'
                   - name: controller.metrics.serviceMonitor.additionalLabels.release
@@ -208,7 +213,7 @@ spec:
                 targetRevision: 2.10.6
                 helm:
                   valueFiles:
-                    - values.yaml'
+                    - values.yaml
                 chart: telepresence
               destination:
                 server: 'https://kubernetes.default.svc'

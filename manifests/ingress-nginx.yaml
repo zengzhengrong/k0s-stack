@@ -42,12 +42,20 @@ spec:
         value: '30379'
       - name: controller.service.nodePorts.tcp.3306
         value: '30306'
+      - name: controller.service.nodePorts.tcp.9000
+        value: '30900'
+      - name: controller.service.nodePorts.tcp.8123
+        value: '30812'
       - name: tcp.6550
         value: 'pulsar/pulsar-proxy:6650'
       - name: tcp.3306
         value: 'radondb-mysql/sample-leader:3306'
       - name: tcp.6379
         value: 'redis/redis-standalone-external-service:6379'
+      - name: tcp.9000
+        value: 'clickhouse/clickhouse-minimal:9000'
+      - name: tpc.8123
+        value: 'clickhouse/clickhouse-minimal:8123'
     repoURL: https://kubernetes.github.io/ingress-nginx
     targetRevision: 4.2.3
   syncPolicy:
