@@ -14,7 +14,7 @@ spec:
       - name: argocd
         chartname: argo/argo-cd
         namespace: default
-        version: "5.16.6"
+        version: "5.36.11"
         values: |
           controller:
             args:
