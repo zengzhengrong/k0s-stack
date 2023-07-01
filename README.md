@@ -25,7 +25,7 @@ cat /dev/null>admin.conf
 #### Access by kubectl
 
 ```
-export KUBECONFIG=$(PWD)/admin.conf
+export KUBECONFIG=$(PWD)/pki/admin.conf
 
 kubectl get node -w
 NAME          STATUS     ROLES           AGE   VERSION
