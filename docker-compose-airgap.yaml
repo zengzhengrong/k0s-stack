@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  k0s:
+    container_name: k0s
+    image: docker.io/k0sproject/k0s:v1.23.10-k0s.0
+    command: k0s controller --config=/etc/k0s/config.yaml --single
+    hostname: k0s
+    privileged: true
+    volumes:
+      - "./certs.d:/etc/containerd/certs.d"
+      - "/var/lib/k0s"
+      - "./config.yaml:/etc/k0s/config.yaml"
+      - "./pki:/var/lib/k0s/pki"
+      - "./data:/var/openebs"
+      - "./airgap/bundle/bundle_file:/var/lib/k0s/images/bundle_file"
+      - "./airgap/localtime:/etc/localtime"
+    tmpfs:
+      - /run
+      - /var/run
+    ports:
+      - "6443:6443"
+      - "80:32080"
+      - "443:32443"
+      - "3306:30306"
+      - "6650:30665"
+      - "6379:30379"
+      - "9000:30900"
+      - "8123:30812"
+    network_mode: "bridge"
