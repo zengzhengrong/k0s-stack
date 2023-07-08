@@ -17,11 +17,14 @@ spec:
       terminationGracePeriodSeconds: 10
       initContainers:
       - name: wait-canal-admin
-        image: zengzhengrong889/box:1.0
-        command: 
-          - sh
-          - -c
-          - until curl -s -o /dev/null canal-admin.canal; do echo waiting for canal-admin; sleep 2; done; echo done
+        image: zengzhengrong889/zurl:latest
+        args:
+          - "--url"
+          - "http://canal-admin.canal/api/v1/login"
+          - "--retry"
+          - "20"
+          - "--debug"
+          - "true"
       containers:
       - name: canal-server
         image: zengzhengrong889/canal_server:v1.16_hotfix

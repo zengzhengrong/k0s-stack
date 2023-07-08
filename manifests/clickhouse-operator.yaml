@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: clickhouse-operator
+spec:
+  project: default
+  source:
+    repoURL: 'https://docs.altinity.com/clickhouse-operator/'
+    targetRevision: 0.21.2
+    chart: altinity-clickhouse-operator
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: clickhouse
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  info:
+    - name: github
+      value: 'https://github.com/Altinity/clickhouse-operator'

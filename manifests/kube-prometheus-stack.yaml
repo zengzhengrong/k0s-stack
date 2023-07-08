@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: kube-prometheus-stack
+spec:
+  project: default
+  source:
+    repoURL: 'https://prometheus-community.github.io/helm-charts'
+    targetRevision: 44.4.1
+    helm:
+      parameters:
+        - name: grafana.defaultDashboardsTimezone
+          value: Asia/Shanghai
+        - name: prometheusOperator.admissionWebhooks.patch.image.registry
+          value: docker.io
+        - name: prometheusOperator.admissionWebhooks.patch.image.repository
+          value: dyrnq/kube-webhook-certgen
+        - name: prometheusOperator.admissionWebhooks.patch.image.sha
+        - name: grafana.ingress.enabled
+          value: 'true'
+        - name: prometheus.ingress.enabled
+          value: 'true'
+        - name: prometheus.ingress.ingressClassName
+          value: nginx
+        - name: grafana.ingress.ingressClassName
+          value: nginx
+        - name: 'prometheus.ingress.hosts[0]'
+          value: prometheus.localhost
+        - name: 'grafana.ingress.hosts[0]'
+          value: grafana.localhost
+        - name: grafana.adminPassword
+          value: admin
+    chart: kube-prometheus-stack
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+  syncPolicy:
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true
+  info:
+    - name: link
+      value: https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+    - name: kube-prometheus
+      value: https://github.com/prometheus-operator/kube-prometheus

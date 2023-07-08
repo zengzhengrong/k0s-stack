@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: kubeseal-webgui
+spec:
+  project: default
+  source:
+    repoURL: 'https://jaydee94.github.io/kubeseal-webgui/'
+    targetRevision: 5.1.0
+    helm:
+      parameters:
+        - name: api.url
+          value: http://kubeseal-webgui.localhost
+        - name: ingress.hostname
+          value: kubeseal-webgui.localhost
+        - name: sealedSecrets.autoFetchCert
+          value: 'true'
+        - name: ingress.enabled
+          value: 'true'
+        - name: ingress.ingressClassName
+          value: nginx
+    chart: kubeseal-webgui
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: kubeseal
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  info:
+    - name: link
+      value: https://github.com/Jaydee94/kubeseal-webgui/tree/master/chart/kubeseal-webgui
+

@@ -1,0 +1,85 @@
+apiVersion: "clickhouse.altinity.com/v1"
+kind: "ClickHouseInstallation"
+metadata:
+  name: "minimal"
+  namespace: clickhouse
+spec:
+  defaults:
+    templates:
+      serviceTemplate: clickhouse-svc
+      dataVolumeClaimTemplate: clickhouse-data
+      logVolumeClaimTemplate: clickhouse-log
+  troubleshoot: "yes"
+  configuration:
+    # users:
+    #   default/password: default
+    # files:
+      # config.d/log_rotation.xml: |-
+      #   <clickhouse>
+      #       <logger>
+      #           <level>trace</level>
+      #           <log>/var/log/clickhouse-server/clickhouse-server.log</log>
+      #           <errorlog>/var/log/clickhouse-server/clickhouse-server.err.log</errorlog>
+      #           <size>1000M</size>
+      #           <count>5</count>
+      #           <console>1</console>
+      #       </logger>
+      #   </clickhouse>
+    zookeeper:
+      nodes:
+        - host: zookeeper.zookeeper
+          port: 2181
+    clusters:
+      - name: replcluster
+        templates:
+          podTemplate: clickhouse-minimal
+        layout:
+          shardsCount: 1
+          replicasCount: 1
+  templates:
+    serviceTemplates:
+      - name: clickhouse-svc
+        generateName: clickhouse-{chi}
+        spec:
+          ports:
+            - name: http
+              port: 8123
+            - name: tcp
+              port: 9000
+          type: ClusterIP
+    podTemplates:
+      - name: clickhouse-minimal
+        spec:
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            fsGroup: 0
+    #       containers:
+    #         - name: clickhouse
+    #           command:
+    #             - /bin/sh
+    #             - -c
+    #             - chown clickhouse:clickhouse /var/lib/clickhouse /usr/bin/clickhouse /var/log/clickhouse-server /etc/clickhouse-server && /entrypoint.sh
+    #           image: clickhouse/clickhouse-server:latest
+    #           volumeMounts:
+    #             - name: clickhouse-log
+    #               mountPath: /var/log/clickhouse-server
+    #             - name: clickhouse-data
+    #               mountPath: /var/lib/clickhouse
+    volumeClaimTemplates:
+      - name: clickhouse-data
+        spec:
+          storageClassName: openebs-hostpath
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 50Gi
+      - name: clickhouse-log
+        spec:
+          storageClassName: openebs-hostpath
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi

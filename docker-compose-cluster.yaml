@@ -27,14 +27,7 @@ services:
       - "6379:30379"
     network_mode: "bridge"
     environment:
-      - "NVIDIA_VISIBLE_DEVICES=all"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: "nvidia"
-              count: "all"
-              capabilities: ["gpu"]
+      - HTTP_PROXY=http://192.168.2.102:7890
   k0s-worker1: &k0s-worker
     container_name: k0s-worker1
     image: docker.io/zengzhengrong889/k0s:bullseye-nvidia
@@ -52,14 +45,7 @@ services:
       - "./token:/var/token"
     network_mode: "bridge"
     environment:
-      - "NVIDIA_VISIBLE_DEVICES=all"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: "nvidia"
-              count: "all"
-              capabilities: ["gpu"]
+      - HTTP_PROXY=http://192.168.2.102:7890
   k0s-worker2:
     <<: *k0s-worker
     container_name: k0s-worker2

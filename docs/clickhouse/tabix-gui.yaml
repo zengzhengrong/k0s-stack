@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  tabix
+  labels:
+    name:  tabix
+  namespace: clickhouse
+spec:
+  selector:
+    matchLabels:
+      app: tabix
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app:  tabix
+    spec:
+      containers:
+      - image: spoonest/clickhouse-tabix-web-client
+        imagePullPolicy: IfNotPresent
+        name:  tabix
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256M"
+          limits:
+            cpu: "1000m"
+            memory: "512M"
+        env:
+        - name: CH_NAME
+          value: dev
+        - name: CH_HOST
+          value: clickhouse-minimal.clickhouse:8123
+        - name: CH_LOGIN
+          value: default
+        ports:
+        - containerPort:  80
+          name:  http
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: tabix
+  namespace: clickhouse
+spec:
+  selector:
+    app:  tabix
+  type: ClusterIP
+  ports:
+  - name: tabix
+    port:  80
+    targetPort: http
+
+---
+# https://kubernetes.io/docs/concepts/services-networking/ingress/
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tabix
+  namespace: clickhouse
+  labels:
+    app: clickhouse-minimal
+    argocd.argoproj.io/instance: tabix
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: tabix.localhost
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tabix
+            port:
+              number: 80

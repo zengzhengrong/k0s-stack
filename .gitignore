@@ -1,12 +1,13 @@
 cmd/argo-workflows/argo
 cmd/argo-rollouts/kubectl-argo-rollouts
 cmd/argocd/argocd
-admin.conf
 data
 apps.yaml
 *_file
 token
 .DS_Store
+pki
+.monokle
 README.md
 docker-compose-cluster.yaml
 docker-compose.yaml

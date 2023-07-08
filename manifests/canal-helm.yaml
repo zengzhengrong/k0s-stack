@@ -7,23 +7,15 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://zengzhengrong.github.io/helm-charts'
-    targetRevision: 0.1.0
-    chart: canal
+    repoURL: 'https://github.com/zengzhengrong/canal-helm.git'
+    path: canal
+    targetRevision: main
     helm:
+      valueFiles:
+        - "/values/local.yaml"
       parameters:
-        - name: canalAdmin.ingress.enabled
-          value: 'true'
-        - name: canalServerClusterMode.enabled
-          value: 'true'
-        - name: canalServerClusterMode.mode
-          value: rocketMQ
         - name: zookeeper.enabled
           value: 'false'
-        - name: defaultSampleCanalInstance.enabled
-          value: 'true'
-        - name: zookeeper.extralUrl
-          value: zookeeper.zookeeper
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: canal

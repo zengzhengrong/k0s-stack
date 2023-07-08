@@ -26,6 +26,8 @@ services:
       - "3306:30306"
       - "6650:30665"
       - "6379:30379"
+      - "9000:30900"
+      - "8123:30812"
     network_mode: "bridge"
     environment:
       - "NVIDIA_VISIBLE_DEVICES=all"

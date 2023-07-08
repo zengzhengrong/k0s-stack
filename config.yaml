@@ -14,7 +14,7 @@ spec:
       - name: argocd
         chartname: argo/argo-cd
         namespace: default
-        version: "5.16.6"
+        version: "5.36.11"
         values: |
           controller:
             args:
@@ -57,7 +57,7 @@ spec:
       - name: argo-apps
         chartname: argo/argocd-apps
         namespace: default
-        version: "0.0.5"
+        version: "1.2.0"
         values: |
           projects:
             - name: default
@@ -105,6 +105,18 @@ spec:
                     value: '30379'
                   - name: tcp.6379
                     value: 'redis/redis-standalone-external-service:6379'
+                  - name: controller.service.nodePorts.tcp.9000
+                    value: '30900'
+                  - name: tcp.9000
+                    value: 'clickhouse/clickhouse-minimal:9000'
+                  - name: controller.service.nodePorts.tcp.8123
+                    value: '30812'
+                  - name: tpc.8123
+                    value: 'clickhouse/clickhouse-minimal:8123'
+                  - name: controller.metrics.serviceMonitor.enabled
+                    value: 'true'
+                  - name: controller.metrics.serviceMonitor.additionalLabels.release
+                    value: kube-prometheus-stack
                 repoURL: https://kubernetes.github.io/ingress-nginx
                 targetRevision: 4.4.0
               syncPolicy:
@@ -135,50 +147,8 @@ spec:
                   - name: server.ingress.hosts[0]
                     value: argostack.localhost
                 repoURL: https://argoproj.github.io/argo-helm
-                targetRevision: 0.22.1
+                targetRevision: 0.17.1
               syncPolicy:
-                automated:
-                  prune: true
-                  selfHeal: true
-                syncOptions:
-                - CreateNamespace=true
-            - name: argo-events
-              destination:
-                namespace: argo
-                server: https://kubernetes.default.svc
-              project: default
-              source:
-                chart: argo-events
-                repoURL: https://argoproj.github.io/argo-helm
-                targetRevision: 2.0.9
-              syncPolicy: 
-                automated:
-                  prune: true
-                  selfHeal: true
-                syncOptions:
-                - CreateNamespace=true
-            - name: argo-rollouts
-              finalizers:
-              - resources-finalizer.argocd.argoproj.io
-              destination:
-                namespace: argo
-                server: https://kubernetes.default.svc
-              project: default
-              source:
-                chart: argo-rollouts
-                helm:
-                  parameters:
-                  - name: dashboard.ingress.enabled
-                    value: "true"
-                  - name: dashboard.ingress.ingressClassName
-                    value: nginx
-                  - name: dashboard.ingress.hosts[0]
-                    value: argorollouts.localhost
-                  - name: dashboard.enabled
-                    value: "true"
-                repoURL: https://argoproj.github.io/argo-helm
-                targetRevision: 2.21.1
-              syncPolicy: 
                 automated:
                   prune: true
                   selfHeal: true
@@ -217,7 +187,7 @@ spec:
               project: default
               source:
                 repoURL: 'https://k8tz.github.io/k8tz'
-                targetRevision: 0.9.0
+                targetRevision: 0.13.0
                 helm:
                   parameters:
                     - name: timezone
@@ -228,6 +198,26 @@ spec:
               destination:
                 server: 'https://kubernetes.default.svc'
                 namespace: k8tz
+              syncPolicy:
+                automated:
+                  prune: true
+                  selfHeal: true
+                syncOptions:
+                  - CreateNamespace=true
+            - name: traffic-manager
+              finalizers:
+              - resources-finalizer.argocd.argoproj.io
+              project: default
+              source:
+                repoURL: 'https://app.getambassador.io'
+                targetRevision: 2.10.6
+                helm:
+                  valueFiles:
+                    - values.yaml
+                chart: telepresence
+              destination:
+                server: 'https://kubernetes.default.svc'
+                namespace: ambassador
               syncPolicy:
                 automated:
                   prune: true

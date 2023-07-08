@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # k0s-stack
 k0s argo stack is pretty simple setup kubernetes by use docker compose
 
