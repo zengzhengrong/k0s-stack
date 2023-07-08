@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: nvidia-operator
+spec:
+  project: default
+  source:
+    repoURL: 'https://nvidia.github.io/gpu-operator'
+    targetRevision: v1.11.1
+    helm:
+      parameters:
+        - name: toolkit.enabled
+          value: 'false'
+        - name: driver.enabled
+          value: 'false'
+    chart: gpu-operator
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: nvidia-operator
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

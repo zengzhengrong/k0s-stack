@@ -4,8 +4,9 @@ cmd/argocd/argocd
 data
 apps.yaml
 *_file
-containerd.toml
 token
 .DS_Store
 pki
 .monokle
+README.md
+docker-compose-cluster.yaml

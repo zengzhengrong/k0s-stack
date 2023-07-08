@@ -2,7 +2,7 @@ version: "3.9"
 services:
   k0s-master:
     container_name: k0s
-    image: docker.io/k0sproject/k0s:v1.23.10-k0s.0
+    image: docker.io/zengzhengrong889/k0s:bullseye-nvidia
     entrypoint: ["sh","entrypoint.sh"]
     hostname: k0s
     privileged: true
@@ -23,15 +23,14 @@ services:
       - "80:32080"
       - "443:32443"
       - "3306:30306"
-      - "8080:8080"
-      - "8000:8000"
       - "6650:30665"
+      - "6379:30379"
     network_mode: "bridge"
     environment:
       - HTTP_PROXY=http://192.168.2.102:7890
   k0s-worker1: &k0s-worker
     container_name: k0s-worker1
-    image: docker.io/k0sproject/k0s:v1.23.10-k0s.0
+    image: docker.io/zengzhengrong889/k0s:bullseye-nvidia
     entrypoint: ["sh","entrypoint-worker.sh","/var/token/k0s.token"]
     hostname: k0s-worker1
     privileged: true

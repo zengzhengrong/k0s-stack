@@ -147,7 +147,7 @@ spec:
                   - name: server.ingress.hosts[0]
                     value: argostack.localhost
                 repoURL: https://argoproj.github.io/argo-helm
-                targetRevision: 0.30.0
+                targetRevision: 0.17.1
               syncPolicy:
                 automated:
                   prune: true

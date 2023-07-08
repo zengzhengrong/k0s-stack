@@ -102,7 +102,7 @@ version = 2
           runtime_type = "io.containerd.runc.v2"
 
           [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
-            BinaryName = ""
+            BinaryName = "/usr/bin/nvidia-container-runtime"
             CriuImagePath = ""
             CriuPath = ""
             CriuWorkPath = ""
@@ -129,7 +129,7 @@ version = 2
       key_model = "node"
 
     [plugins."io.containerd.grpc.v1.cri".registry]
-      config_path = "/etc/containerd/certs.d"
+      config_path = ""
 
       [plugins."io.containerd.grpc.v1.cri".registry.auths]
 
@@ -138,14 +138,6 @@ version = 2
       [plugins."io.containerd.grpc.v1.cri".registry.headers]
 
       [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
-        [plugins."io.containerd.grpc.v1.cri".registry.mirrors."docker.io"]
-            endpoint = ["https://1nj0zren.mirror.aliyuncs.com"]
-        [plugins."io.containerd.grpc.v1.cri".registry.mirrors."gcr.io"]
-            endpoint = ["https://gcr.dockerproxy.com"]
-        [plugins."io.containerd.grpc.v1.cri".registry.mirrors."k8s.gcr.io"]
-            endpoint = ["https://k8s.dockerproxy.com"]
-        [plugins."io.containerd.grpc.v1.cri".registry.mirrors."quay.io"]
-            endpoint = ["https://quay.dockerproxy.com"]
 
     [plugins."io.containerd.grpc.v1.cri".x509_key_pair_streaming]
       tls_cert_file = ""
@@ -169,18 +161,13 @@ version = 2
 
   [plugins."io.containerd.runtime.v1.linux"]
     no_shim = false
-    runtime = "runc"
+    runtime = "nvidia-container-runtime"
     runtime_root = ""
     shim = "containerd-shim"
     shim_debug = false
-  [plugins."io.containerd.runtime.v2.task"]
-    platforms = ["linux/amd64"]
 
   [plugins."io.containerd.service.v1.diff-service"]
     default = ["walking"]
-
-  [plugins."io.containerd.service.v1.tasks-service"]
-    rdt_config_file = ""
 
   [plugins."io.containerd.snapshotter.v1.aufs"]
     root_path = ""
@@ -231,7 +218,6 @@ version = 2
   "io.containerd.timeout.shim.cleanup" = "5s"
   "io.containerd.timeout.shim.load" = "5s"
   "io.containerd.timeout.shim.shutdown" = "3s"
-  "io.containerd.timeout.task.state" = "2s"
 
 [ttrpc]
   address = ""
