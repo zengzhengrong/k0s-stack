@@ -2,19 +2,16 @@ version: "3.9"
 services:
   k0s:
     container_name: k0s
-    image: docker.io/zengzhengrong889/k0s:bullseye-nvidia
+    image: docker.io/k0sproject/k0s:v1.23.10-k0s.0
     command: k0s controller --config=/etc/k0s/config.yaml --single
     hostname: k0s
     privileged: true
-    runtime: nvidia
     volumes:
       - "./certs.d:/etc/containerd/certs.d"
       - "/var/lib/k0s"
-      - "./containerd.toml:/etc/k0s/containerd.toml"
       - "./config.yaml:/etc/k0s/config.yaml"
-      - "./admin.conf:/var/lib/k0s/pki/admin.conf"
+      - "./pki:/var/lib/k0s/pki"
       - "./data:/var/openebs"
-      - "./airgap/bundle/bundle_file:/var/lib/k0s/images/bundle_file"
       - "./airgap/localtime:/etc/localtime"
     tmpfs:
       - /run
@@ -29,12 +26,3 @@ services:
       - "9000:30900"
       - "8123:30812"
     network_mode: "bridge"
-    environment:
-      - "NVIDIA_VISIBLE_DEVICES=all"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: "nvidia"
-              count: "all"
-              capabilities: ["gpu"]

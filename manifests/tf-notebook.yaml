@@ -3,16 +3,16 @@ kind: Application
 metadata:
   finalizers:
   - resources-finalizer.argocd.argoproj.io
-  name: radondb-mysql-sample
+  name: tensorflow-notebook
 spec:
   project: default
   source:
     repoURL: 'https://github.com/zengzhengrong/k0s-stack'
-    path: docs/radondb/sample_5.7_mysqlcluster/
+    path: docs/nvidia-gpu/tf-notebook/
     targetRevision: master
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: radondb-mysql
+    namespace: jupyter
   syncPolicy:
     syncOptions:
       - CreateNamespace=true

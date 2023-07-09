@@ -26,17 +26,17 @@ spec:
   - name: init-tensorflow-docs
     image: bitnami/git:latest
     imagePullPolicy: IfNotPresent
-    command: ['sh', '-c', 'set -e',"git clone https://github.com/tensorflow/docs.git /docs"]
+    command: ['sh', '-c', 'set -e',"git clone https://github.com/tensorflow/docs.git /tf/docs"]
     volumeMounts:
       - name: tmp
-        mountPath: /docs
+        mountPath: /tf/docs
   containers:
   - name: tf-notebook
     image: tensorflow/tensorflow:latest-gpu-jupyter
     imagePullPolicy: IfNotPresent
     resources:
       limits:
-        nvidia.com/gpu: 0
+        nvidia.com/gpu: "0"
         cpu: "1"
         memory: 1024Mi
     ports:

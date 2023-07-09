@@ -1,8 +1,8 @@
 FROM debian:bullseye-slim
 COPY --from=zengzhengrong889/helm:3 /usr/bin/helm /usr/local/bin/helm
-COPY --from=k0sproject/k0s:latest /usr/local/bin/kubectl /usr/local/bin/kubectl
-COPY --from=k0sproject/k0s:latest /usr/local/bin/k0s /usr/local/bin/k0s
-COPY --from=k0sproject/k0s:latest /entrypoint.sh /entrypoint.sh
+COPY --from=k0sproject/k0s:v1.23.10-k0s.0 /usr/local/bin/kubectl /usr/local/bin/kubectl
+COPY --from=k0sproject/k0s:v1.23.10-k0s.0 /usr/local/bin/k0s /usr/local/bin/k0s
+COPY --from=k0sproject/k0s:v1.23.10-k0s.0 /entrypoint.sh /entrypoint.sh
 
 WORKDIR /
 

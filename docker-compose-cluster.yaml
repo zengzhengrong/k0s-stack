@@ -11,7 +11,6 @@ services:
       - "./certs.d:/etc/containerd/certs.d"
       - "/var/lib/k0s"
       - "./config.yaml:/etc/k0s/config.yaml"
-      - "./containerd.toml:/etc/k0s/containerd.toml"
       - "./admin.conf:/var/lib/k0s/pki/admin.conf"
       - "./airgap/localtime:/etc/localtime"
       - "./token:/var/token"
@@ -26,8 +25,6 @@ services:
       - "6650:30665"
       - "6379:30379"
     network_mode: "bridge"
-    environment:
-      - HTTP_PROXY=http://192.168.2.102:7890
   k0s-worker1: &k0s-worker
     container_name: k0s-worker1
     image: docker.io/zengzhengrong889/k0s:bullseye-nvidia
@@ -39,13 +36,9 @@ services:
       - "./certs.d:/etc/containerd/certs.d"
       - "/var/lib/k0s"
       - "./data:/var/openebs"
-      # - "./airgap/bundle/bundle_file:/var/lib/k0s/images/bundle_file"
-      - "./containerd.toml:/etc/k0s/containerd.toml"
       - "./airgap/localtime:/etc/localtime"
       - "./token:/var/token"
     network_mode: "bridge"
-    environment:
-      - HTTP_PROXY=http://192.168.2.102:7890
   k0s-worker2:
     <<: *k0s-worker
     container_name: k0s-worker2

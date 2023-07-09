@@ -3,7 +3,63 @@ k0s argo stack is pretty simple setup kubernetes by use docker compose
 
 # Usage
 
-##### Note:  nvidia driver version has new in cuda 12.0.0, below example is only available with GTX 1060 and 516.94 with cuda 11.7
+#### Single Mode
+
+Control-plane and worker in one container
+
+```
+docker-compose up -d
+```
+#### Multiple Mode
+
+Default one control-plane container and two wroker container , Ingress inside control-plane container
+```
+docker-compose -f docker-compose-cluster.yaml up -d
+```
+#### Clean up
+
+Delete /var/token/k0s.token and clean admin.conf
+```
+cat /dev/null>admin.conf
+```
+
+#### Access by kubectl
+
+```
+export KUBECONFIG=$(PWD)/pki/admin.conf
+
+kubectl get node -w
+NAME          STATUS     ROLES           AGE   VERSION
+k0s           NotReady   control-plane   60s   v1.23.10+k0s
+k0s-worker1   NotReady   worker          60s   v1.23.10+k0s
+k0s-worker2   NotReady   worker          60s   v1.23.10+k0s
+```
+#### Airgap
+
+See airgap directory
+```
+docker-compose -f docker-compose-airgap.yaml up -d
+```
+
+# Argocd 
+
+
+Access UI [argocd](http://argocd.localhost/) by default  username ```admin``` password ```admin```
+
+# Argocd Applications
+
+See more [manifest](https://github.com/zengzhengrong/k0s-stack/tree/zh-cn/manifests)
+
+
+# Enable GPU
+
+
+See more [wsl2-cuda-downloads](https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_local)
+See more [docs](https://docs.nvidia.com/cuda/wsl-user-guide/index.html#nvidia-compute-software-support-on-wsl-2)
+
+```
+docker-compose -f docker-compose-gpu.yaml up -d
+```
 
 
 
@@ -27,8 +83,9 @@ https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda
 ```
 wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-wsl-ubuntu.pin
 sudo mv cuda-wsl-ubuntu.pin /etc/apt/preferences.d/cuda-repository-pin-600
-wget https://developer.download.nvidia.com/compute/cuda/11.7.0/local_installers/cuda-repo-wsl-ubuntu-11-7-local_11.7.0-1_amd64.deb
-sudo dpkg -i cuda-repo-wsl-ubuntu-11-7-local_11.7.0-1_amd64.deb
+wget https://developer.download.nvidia.com/compute/cuda/12.2.0/local_installers/cuda-repo-wsl-ubuntu-12-2-local_12.2.0-1_amd64.deb
+sudo dpkg -i cuda-repo-wsl-ubuntu-12-2-local_12.2.0-1_amd64.deb
+sudo cp /var/cuda-repo-wsl-ubuntu-12-2-local/cuda-*-keyring.gpg /usr/share/keyrings/
 sudo apt-get update
 sudo apt-get -y install cuda
 ```
@@ -64,7 +121,7 @@ docker run --rm -it --gpus=all nvcr.io/nvidia/k8s/cuda-sample:nbody nbody -gpu -
 
 3.Start k0s
 ```
-docker-compose up -d
+docker-compose -f docker-compose-gpu.yaml up -d
 ```
 Copy admin.cnof to your path of kubeconfig file
 
@@ -105,6 +162,26 @@ GPU Device 0: "Pascal" with compute capability 6.1
 https://docs.nvidia.com/cuda/wsl-user-guide/index.html#setting-up-linux-dev-env
 2.Install k8s-device-plugin
 https://github.com/NVIDIA/k8s-device-plugin/issues/332
+#### storage
+
+1.openebs issues in wsl https://github.com/openebs/openebs/issues/3487  
+2.Only use local path pv
+
+#### Private Registry
+
+https://github.com/containerd/containerd/blob/main/docs/cri/registry.md
+
+
+#### helm install argo-apps error
+Log
+```
+rendered manifests contain a resource that already exists. Unable to continue with install: AppProject default
+```
+
+Try to delete resource and restart
+```
+k0s kc delete AppProject default
+```
 
 # Compare
 
