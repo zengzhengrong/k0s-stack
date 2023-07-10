@@ -54,7 +54,7 @@ See more [manifest](https://github.com/zengzhengrong/k0s-stack/tree/zh-cn/manife
 # Enable GPU
 
 
-See more [wsl2-cuda-downloads](https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_local)
+See more [wsl2-cuda-downloads](https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_local)  
 See more [docs](https://docs.nvidia.com/cuda/wsl-user-guide/index.html#nvidia-compute-software-support-on-wsl-2)
 
 ```
@@ -90,6 +90,10 @@ sudo apt-get update
 sudo apt-get -y install cuda
 ```
 
+install ![nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+
+
+
 Check install
 
 ```
@@ -123,7 +127,6 @@ docker run --rm -it --gpus=all nvcr.io/nvidia/k8s/cuda-sample:nbody nbody -gpu -
 ```
 docker-compose -f docker-compose-gpu.yaml up -d
 ```
-Copy admin.cnof to your path of kubeconfig file
 
 4.Test GPU in k0s container
 
