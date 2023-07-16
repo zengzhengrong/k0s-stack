@@ -210,7 +210,7 @@ spec:
               project: default
               source:
                 repoURL: 'https://app.getambassador.io'
-                targetRevision: 2.10.6
+                targetRevision: 2.14.1
                 helm:
                   valueFiles:
                     - values.yaml
@@ -219,8 +219,28 @@ spec:
                 server: 'https://kubernetes.default.svc'
                 namespace: ambassador
               syncPolicy:
-                automated:
-                  prune: true
-                  selfHeal: true
+                automated: {}
                 syncOptions:
                   - CreateNamespace=true
+            - name: cert-manager
+              finalizers:
+              - resources-finalizer.argocd.argoproj.io
+              project: default
+              source:
+                repoURL: 'https://charts.jetstack.io'
+                targetRevision: v1.12.2
+                helm:
+                  parameters:
+                    - name: installCRDs
+                      value: 'true'
+                chart: cert-manager
+              destination:
+                server: 'https://kubernetes.default.svc'
+                namespace: cert-manager
+              syncPolicy:
+                automated: {}
+                syncOptions:
+                  - CreateNamespace=true
+              info:
+                - name: 'install '
+                  value: 'https://cert-manager.io/docs/installation/helm/'

@@ -2,7 +2,7 @@ version: "3.9"
 services:
   k0s-master:
     container_name: k0s
-    image: docker.io/zengzhengrong889/k0s:bullseye-nvidia
+    image: docker.io/k0sproject/k0s:v1.27.3-k0s.0
     entrypoint: ["sh","entrypoint.sh"]
     hostname: k0s
     privileged: true
@@ -11,7 +11,7 @@ services:
       - "./certs.d:/etc/containerd/certs.d"
       - "/var/lib/k0s"
       - "./config.yaml:/etc/k0s/config.yaml"
-      - "./admin.conf:/var/lib/k0s/pki/admin.conf"
+      - "./pki:/var/lib/k0s/pki"
       - "./airgap/localtime:/etc/localtime"
       - "./token:/var/token"
     tmpfs:
@@ -27,7 +27,7 @@ services:
     network_mode: "bridge"
   k0s-worker1: &k0s-worker
     container_name: k0s-worker1
-    image: docker.io/zengzhengrong889/k0s:bullseye-nvidia
+    image: docker.io/k0sproject/k0s:v1.27.3-k0s.0
     entrypoint: ["sh","entrypoint-worker.sh","/var/token/k0s.token"]
     hostname: k0s-worker1
     privileged: true
