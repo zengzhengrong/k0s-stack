@@ -9,7 +9,11 @@ spec:
   project: default
   source:
     repoURL: 'https://radondb.github.io/radondb-mysql-kubernetes/'
-    targetRevision: 2.3.0
+    targetRevision: 3.0.1
+    helm:
+      parameters:
+        - name: webhook.certManager.enabled
+          value: 'false'
     chart: mysql-operator
   destination:
     server: 'https://kubernetes.default.svc'
