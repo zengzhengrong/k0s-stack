@@ -1,5 +1,10 @@
 version: "3.9"
 services:
+  airgap:
+    container_name: airgap
+    image: docker.io/zengzhengrong889/k0s-airgap
+    volumes:
+      - bundle-volume:/var/data
   k0s:
     container_name: k0s
     image: docker.io/k0sproject/k0s:v1.23.10-k0s.0
@@ -12,8 +17,8 @@ services:
       - "./config.yaml:/etc/k0s/config.yaml"
       - "./pki:/var/lib/k0s/pki"
       - "./data:/var/openebs"
-      - "./airgap/bundle/bundle_file:/var/lib/k0s/images/bundle_file"
       - "./airgap/localtime:/etc/localtime"
+      - bundle-volume:/var/lib/k0s/images
     tmpfs:
       - /run
       - /var/run
@@ -27,3 +32,8 @@ services:
       - "9000:30900"
       - "8123:30812"
     network_mode: "bridge"
+    depends_on:
+      - airgap
+
+volumes:
+  bundle-volume:

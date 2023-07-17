@@ -16,6 +16,11 @@ run ```text_classification_with_hub.ipynb```
 
 
 text_classification_with_hub.ipynb#Train-the-model
+
+```
+gpu_available = tf.config.list_physical_devices('GPU')
+```
+
 ```
 nvidia-smi
 +-----------------------------------------------------------------------------+
