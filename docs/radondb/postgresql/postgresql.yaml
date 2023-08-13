@@ -1,0 +1,199 @@
+apiVersion: postgres.radondb.io/v1
+kind: PostgreSQL
+metadata:
+  name: radondb-postgresql
+  namespace: radondb-postgresql
+spec:
+  action: start #stop start
+  deletepvc: true
+  #deletes3: false # delete the backup in s3 at delete cluster
+  antiaffinity:
+    policy: preferred                             # preferred/required
+    podAntiAffinityTerm: none   # none/autofailover-readwrite/autofailover-readwrite-readonly, stand-alone use none
+    topologyKey: "kubernetes.io/hostname"         # when policy is required, only allow "kubernetes.io/hostname"
+  services:
+    - selector: autofailover # autofailover/primary/standby/readonly/standby-readonly
+      metadata:
+        name: autofailover
+      spec:
+        type: ClusterIP
+        ports:
+          - name: exporter # cant' change the name
+            port: 9187 #targetPort: 9187
+    - selector: primary # autofailover/primary/standby/readonly/standby-readonly
+      metadata:
+        name: readwrite
+      spec:
+        type: ClusterIP
+        ports:
+          - name: prime # cant' change the name
+            port: 5432
+          - name: exporter # cant' change the name
+            port: 9187
+    - selector: standby-readonly
+      metadata:
+        name: standby-readonly
+      spec:
+        type: ClusterIP
+        ports:
+          - name: prime # cant' change the name
+            port: 5432
+          - name: exporter # cant' change the name
+            port: 9187
+  autofailover:
+    hbas:
+      - host all all all md5
+    configs:
+      - enable_seqscan=on
+    podspec:
+      terminationGracePeriodSeconds: 60
+#      priorityClassName: high-priority
+      containers:
+        - image: radondb/radondb-postgresql:15.3-v1.2.2
+          imagePullPolicy: IfNotPresent
+          name: postgresql #can't change the name
+          volumeMounts:
+            - name: data # can't change the name
+              mountPath: /var/lib/postgresql/data
+          resources:
+            limits:
+              memory: "200Mi"
+              cpu: "0.2"
+        - image: radondb/radondb-postgres-exporter:15-v1.2.0
+          imagePullPolicy: IfNotPresent
+          name: exporter # can't change the name
+          volumeMounts:
+            - name: data # can't change the name
+              mountPath: /var/lib/postgresql/data
+          resources:
+            limits:
+              memory: "100Mi"
+              cpu: "0.1"
+    volumeClaimTemplates:
+      - metadata:
+          name: data
+        spec:
+          storageClassName: "openebs-hostpath"
+          accessModes: [ "ReadWriteOnce" ]
+          resources:
+            requests:
+              storage: 1Gi
+  postgresql:
+    users:
+      admin:
+        - name: root
+          password: root
+      normal:
+        - name: zeron
+          password: zeron
+    hbas:
+      - host all all all md5
+    configs:
+      - max_connections=133
+      - shared_buffers=133MB
+      - port=5432
+      - enable_seqscan=on
+    readwriteinstance:
+      replicas: 1
+      podspec:
+        terminationGracePeriodSeconds: 60
+        containers:
+          - image: radondb/radondb-postgresql:15.3-v1.2.2
+            imagePullPolicy: IfNotPresent
+            name: postgresql #can't change the name
+            volumeMounts:
+              - name: data # can't change the name
+                mountPath: /var/lib/postgresql/data
+            resources:
+              limits:
+                memory: "500Mi"
+                cpu: "0.5"
+          - image: radondb/radondb-postgres-exporter:15-v1.2.0
+            imagePullPolicy: IfNotPresent
+            name: exporter # can't change the name
+            volumeMounts:
+              - name: data # can't change the name
+                mountPath: /var/lib/postgresql/data
+            resources:
+              limits:
+                memory: "100Mi"
+                cpu: "0.1"
+      volumeClaimTemplates:
+        - metadata:
+            name: data
+          spec:
+            storageClassName: "openebs-hostpath"
+            accessModes: [ "ReadWriteOnce" ]
+            resources:
+              requests:
+                storage: 1Gi
+    readonlyinstance:
+      streaming: async  #sync/async
+      replicas: 0
+      podspec:
+        terminationGracePeriodSeconds: 60
+        containers:
+          - image: radondb/radondb-postgresql:15.3-v1.2.2
+            imagePullPolicy: IfNotPresent
+            name: postgresql #can't change the name
+            volumeMounts:
+              - name: data # can't change the name
+                mountPath: /var/lib/postgresql/data
+            resources:
+              limits:
+                memory: "500Mi"
+                cpu: "0.5"
+          - image: radondb/radondb-postgres-exporter:15-v1.2.0
+            imagePullPolicy: IfNotPresent
+            name: exporter # can't change the name
+            volumeMounts:
+              - name: data # can't change the name
+                mountPath: /var/lib/postgresql/data
+            resources:
+              limits:
+                memory: "100Mi"
+                cpu: "0.1"
+      volumeClaimTemplates:
+        - metadata:
+            name: data
+          spec:
+            storageClassName: "openebs-hostpath"
+            accessModes: [ "ReadWriteOnce" ]
+            resources:
+              requests:
+                storage: 1Gi
+#  rebuild:
+#    nodeName: pg-readwriteinstance-1 /##/ test          # statefulset names, characters after /##/ will be ignored
+#  switchover:
+#    masterNode: pg-readwriteinstance-1 /##/ test         # statefulset names, characters after /##/ will be ignored
+#  S3:
+#    ACCESS_KEY: "xxxxxxxxxxxxxxxxxxx"
+#    SECRET_KEY: "xxxxxxxxxxxxxxxxxxx"
+#    ENDPOINT: "http://s3.pek3.qingstor.com/"
+#    BUCKET: "postgresql"
+#    PATH: "test/backup"
+#  backupCluster:
+#    backupToS3:
+##      name: postgresql-backup
+#      policy:                                  # take effect on next backup
+#        archive: 'on'                            # whether to archive WAL. on/off
+#        compression: gzip                        # backup compression. none/gzip/bzip2/snappy
+#        encryption: AES256                       # backup encryption. none/AES256/aws:kms
+#        retention: REDUNDANCY 10                 # backup retention policy. none/REDUNDANCY value/RECOVERY WINDOW OF value {DAYS | WEEKS | MONTHS}
+                                                   # none: backup does not expire
+                                                   # REDUNDANCY value: keep the number of backups. eg: REDUNDANCY 10.
+                                                   # RECOVERY WINDOW OF value {DAYS | WEEKS | MONTHS}: keep backup time. eg: RECOVERY WINDOW OF 60 DAYS
+#  restore:
+#    froms3:
+##      name: postgresql-backup
+#      recovery: latest                      # backupid or recovery_time or macro variable
+                                                # eg:
+                                                      # recovery: 20221011T143943 means recovering full data from 20221011T143943 backup
+                                                      # recovery: 2022-10-11 14:45:32 means the data recovered to 2022-10-11 14:45:32
+                                                # supported macro variable:
+                                                      # latest: Restoring to latest state
+                                                      # latest-full: Restoring to the latest full backup state
+                                                      # oldest-full: Restoring to the oldest full backup state
+#    fromssh:
+#      path: /home/lzzhang/xx
+#      address: root:password:192.168.0.8:22 # or local 'local' restore from the first postgresql node

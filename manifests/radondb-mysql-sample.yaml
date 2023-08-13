@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/zengzhengrong/k0s-stack'
-    path: docs/radondb/sample_5.7_mysqlcluster/
+    path: docs/radondb/mysql/sample_5.7_mysqlcluster/
     targetRevision: master
   destination:
     server: 'https://kubernetes.default.svc'

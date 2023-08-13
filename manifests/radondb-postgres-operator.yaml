@@ -1,0 +1,19 @@
+# https://github.com/radondb/multi-platform-postgresql
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: radondb-postgres-operator
+spec:
+  project: default
+  source:
+    repoURL: 'https://radondb.github.io/multi-platform-postgresql/'
+    targetRevision: v1.2.2
+    chart: postgres-operator
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: radondb-postgresql
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

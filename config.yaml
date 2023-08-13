@@ -111,8 +111,12 @@ spec:
                     value: 'clickhouse/clickhouse-minimal:9000'
                   - name: controller.service.nodePorts.tcp.8123
                     value: '30812'
-                  - name: tpc.8123
+                  - name: tcp.8123
                     value: 'clickhouse/clickhouse-minimal:8123'
+                  - name: tcp.5432
+                    value: 'radondb-postgresql/radondb-postgresql-readwrite:5432'
+                  - name: controller.service.nodePorts.tcp.5432
+                    value: '30543'
                   - name: controller.metrics.serviceMonitor.enabled
                     value: 'true'
                   - name: controller.metrics.serviceMonitor.additionalLabels.release
@@ -219,7 +223,6 @@ spec:
                 server: 'https://kubernetes.default.svc'
                 namespace: ambassador
               syncPolicy:
-                automated: {}
                 syncOptions:
                   - CreateNamespace=true
             - name: cert-manager
